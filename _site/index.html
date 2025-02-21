@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SW Todos</title>
+    <link href="main.css" rel="stylesheet">
+    <!-- TODO design favicon -->
+    <!-- <link rel="icon" href="favicon.ico" /> -->
+
+    <script type="module" src="main.js"></script>
+    <!-- <link rel="manifest" href="app.webmanifest"> -->
+    <script src="htmx.min.js"></script>
+  </head>
+  <body>
+    <template shadowrootmode="open">
+      <header>
+        <h1 class="sr-only">Tasks Home Screen</h1>
+        <nav>
+          <ul>
+            <li>Home</li>
+            <li>Settings</li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <a id="first" href="/postMessage1">1 Post message</a>
+        <a id="second" href="/postMessage2">2 Post message</a>
+
+        <section>
+          <form action="/create" method="POST">
+            <label>
+              <span>Title</span>
+              <input name="title" type="text" required>
+            </label>
+            <button type="submit">Add</button>
+          </form>
+        </section>
+        <section>
+          <h2>Todos</h2>
+          <slot name="todo-list">All done!</slot>
+        </section>
+      </main>
+    </template>
+    <!-- lazy -->
+  </body>
+</html>
