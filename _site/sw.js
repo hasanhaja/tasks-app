@@ -1,10 +1,11 @@
 // Placing this here so the above constants are honored
 // importScripts("db.js", "utils.js");
 import { DBDriver } from "./db.js";
-import { escapeHtml } from "./utils.js";
+import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
 
 const VERSION = "0.0.1";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
+const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
 
@@ -12,7 +13,6 @@ let db;
 
 const sanitizerBc = new BroadcastChannel("html-sanitizer");
 
-// TODO Cache manifest etc, but not service worker. Let the browser handle that.
 const assets = [
   "/",
   "/index.html",
@@ -22,23 +22,8 @@ const assets = [
   "/main.css",
 ];
 
-async function cacheStatic() {
-  const cache = await caches.open(STATIC_CACHE_NAME);
-  await cache.addAll(assets);
-  console.log(`${STATIC_CACHE_NAME} has been updated`);
-}
-
-async function cleanCache() {
-  const keys = await caches.keys();
-  return Promise.all(
-    keys
-      .filter((key) => key !== STATIC_CACHE_NAME)
-      .map((key) => caches.delete(key))
-  );
-}
-
 async function init() {
-  await cacheStatic();
+  await cacheStatic(STATIC_CACHE_NAME, assets);
   db = new DBDriver(DATABASE_NAME, STORE_NAME);
 }
 
@@ -51,35 +36,10 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   console.log(`Version ${VERSION} activated`);
   e.waitUntil(async () => {
-    await cleanCache();
+    await cleanCache(STATIC_CACHE_NAME);
     await self.clients.claim(); 
   });
 });
-
-// BroadcastChannel promise wrapper
-
-/**
-  * @param {object} message
-  * @param {BroadcastChannel} chan
-  *
-  * @returns {Promise<object>}
-  */
-function post(message, chan) {
-  return new Promise((resolve, reject) => {
-    const messageId = `${chan.name}-${self.crypto.randomUUID()}`;
-    const controller = new AbortController();
-
-    chan.addEventListener("message", (e) => {
-      const { _id, ...data} = e.data
-      if (_id === messageId) {
-        resolve(data);
-        controller.abort();
-      }
-    }, { signal: controller.signal });
-
-    chan.postMessage({ _id: messageId, ...message }); 
-  });
-}
 
 /**
   * @typedef {Object} TodoItem
