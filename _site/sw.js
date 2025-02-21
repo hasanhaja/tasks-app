@@ -1,5 +1,3 @@
-// Placing this here so the above constants are honored
-// importScripts("db.js", "utils.js");
 import { DBDriver } from "./db.js";
 import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
 
