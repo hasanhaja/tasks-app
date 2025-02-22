@@ -1,13 +1,16 @@
 import { DBDriver } from "./db.js";
+import { Router } from "./router.js";
 import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
 
 const VERSION = "0.0.1";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
+const DYNAMIC_CACHE_NAME = `dynamic-cache`;
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
 
 let db;
+const app = new Router();
 
 const sanitizerBc = new BroadcastChannel("html-sanitizer");
 
@@ -149,49 +152,59 @@ function spliceResponseWithData(cachedContent, data) {
   `;
 }
 
-self.addEventListener("fetch", (e) => {
-  const url = new URL(e.request.url);
-  const path = url.pathname;
-
-  if (path === "/" || path === "/index.html") {
-    e.respondWith(respondWithSpliced());
-  } else if (path === "/postMessage1") {
-    e.waitUntil(
-      post({ path: "first", count: 0, increment: 1 }, sanitizerBc)
-      .then((data) => {
-        console.log("New SW data:", data);
-      })
-    ); 
-
-    e.respondWith(redirect("/"));
-  } else if (path === "/postMessage2") {
-    e.waitUntil(
-      post({ path: "second", count: 0, increment: 10 }, sanitizerBc)
-      .then((data) => {
-        console.log("New SW data:", data);
-      })
-    ); 
-
-    e.respondWith(redirect("/"));
-  } else if (path === "/create") {
-    e.waitUntil(
-      e.request.text()
-        .then((text) => new URLSearchParams(text))
-        .then(([title, _]) => title)
-        .then(([, value]) => escapeHtml(value))
-        .then((value) => createTodo(value))
-        .then(([ id, value ]) => db.set(id, value))
-    );
-    e.respondWith(redirect("/"));
-  } else if (path === "/delete") {
-    const id = url.searchParams.get("id");
-    e.waitUntil(db.del(id));
-    e.respondWith(redirect("/"));
-  } else if (path === "/complete") {
-    const id = url.searchParams.get("id");
-    e.waitUntil(db.update(id, completeTodo));
-    e.respondWith(redirect("/"));
-  } else if (assets.includes(path)) {
-    e.respondWith(respondWithCache(e.request));
-  }
+app.get("/", () => {
+  return respondWithSpliced();
 });
+
+app.get("/postMessage1", (_, e) => {
+ e.waitUntil(
+    post({ path: "first", count: 0, increment: 1 }, sanitizerBc)
+    .then((data) => {
+      console.log("New SW data:", data);
+    })
+  ); 
+  return redirect("/");
+});
+
+app.get("/postMessage2", (_, e) => {
+ e.waitUntil(
+    post({ path: "second", count: 0, increment: 10 }, sanitizerBc)
+    .then((data) => {
+      console.log("New SW data:", data);
+    })
+  ); 
+  return redirect("/");
+});
+
+app.post("/create", (req, e) => {
+ e.waitUntil(
+   req.text()
+    .then((text) => new URLSearchParams(text))
+    .then(([title, _]) => title)
+    .then(([, value]) => escapeHtml(value))
+    .then((value) => createTodo(value))
+    .then(([ id, value ]) => db.set(id, value))
+  );
+ 
+  return redirect("/");
+});
+
+app.get("/delete", (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  e.waitUntil(db.del(id));
+  
+  return redirect("/");
+});
+
+app.get("/complete", (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  e.waitUntil(db.update(id, completeTodo));
+ 
+  return redirect("/");
+});
+
+app.registerCachedAssetsAndHandler(assets, respondWithCache);
+
+app.listen();
