@@ -1,17 +1,20 @@
+import { cacheFirst, networkFirst, staleWhileRevalidate } from "./utils.js";
+
 export class Router {
   #getHandlers;
   #postHandlers;
   #putHandlers;
   #deleteHandlers;
 
-  #assets;
-  #assetCacheHandler;
+  #cacheMap;
 
   constructor() {
     this.#getHandlers = new Map();
     this.#postHandlers = new Map();
     this.#putHandlers = new Map();
     this.#deleteHandlers = new Map();
+
+    this.#cacheMap = new Map();
   }
 
   get(path, handler) {
@@ -30,9 +33,22 @@ export class Router {
     this.#deleteHandlers.set(path, handler);
   }
 
-  registerCachedAssetsAndHandler(assets, assetCacheHandler) {
-    this.#assets = assets;
-    this.#assetCacheHandler = assetCacheHandler;
+  /**
+  * @typedef {Object} CacheConfig
+  * @property {string} cacheName
+  * @property {"cache-first" | "network-first" | "stale-while-revalidate"} strategy
+  * @property {string[]} assets
+  */
+
+  /**
+    * @param {CacheConfig[]} cacheConfig
+    */
+  caches(cacheConfig) {
+    for (const config of cacheConfig) {
+      for (const asset of config.assets) {
+        this.#cacheMap.set(asset, { cacheName: config.cacheName, strategy: config.strategy })
+      }
+    }
   }
 
   listen() {
@@ -73,11 +89,23 @@ export class Router {
         return;
       }
 
-      // TODO Refactor to be cache middleware
-      if (this.#assets.includes(path)) {
-        e.respondWith(this.#assetCacheHandler(e.request));
-        return;
-      }  
+      const cachedAssetConfig = this.#cacheMap.get(path);
+      
+      if (cachedAssetConfig) {
+        const { cacheName, strategy } = cachedAssetConfig;  
+        
+        switch (strategy) {
+          case "cache-first":
+            e.respondWith(cacheFirst(e.request, cacheName));
+            return;
+          case "network-first":
+            e.respondWith(networkFirst(e.request, cacheName));
+            return;
+          case "stale-while-revalidate":
+            e.respondWith(staleWhileRevalidate(e.request, cacheName));
+            return;
+        }
+      }
 
       e.respondWith(
         new Response(`<pre>CANNOT ${method} ${path}</pre>`, {

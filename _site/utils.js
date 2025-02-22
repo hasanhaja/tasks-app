@@ -58,3 +58,36 @@ export async function cleanCache(cacheName) {
       .map((key) => caches.delete(key))
   );
 }
+
+// Cache first, falling back to network strategy: https://developer.chrome.com/docs/workbox/caching-strategies-overview/#cache_first_falling_back_to_network
+export async function cacheFirst(request, cacheName) {
+  const cacheRes = await caches.match(request); 
+  if (cacheRes !== undefined) {
+    return cacheRes;
+  } 
+  const fetchRes = await fetch(request);
+  const cache = await caches.open(cacheName);
+  cache.put(request, fetchRes.clone());
+  return fetchRes;
+}
+
+export async function networkFirst(request, cacheName) {
+  try {  
+    const fetchRes = await fetch(request);
+    const cache = await caches.open(cacheName);
+    cache.put(request, fetchRes.clone());
+    return fetchRes;
+  } catch (_) {
+    return await caches.match(request); 
+  }
+}
+
+export async function staleWhileRevalidate(request, cacheName) {
+  const cacheRes = await caches.match(request); 
+  
+  const fetchRes = await fetch(request);
+  const cache = await caches.open(cacheName);
+  cache.put(request, fetchRes.clone());
+
+  return cacheRes || fetchRes;
+}

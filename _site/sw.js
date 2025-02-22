@@ -76,18 +76,6 @@ function completeTodo(todo) {
   };
 }
 
-async function respondWithCache(request) {
-  const cacheRes = await caches.match(request); 
-  if (cacheRes !== undefined) {
-    return cacheRes;
-  } 
-  // fetch anyways incase the cache is stale
-  const fetchRes = await fetch(request);
-  const cache = await caches.open(STATIC_CACHE_NAME);
-  cache.put(request, fetchRes.clone());
-  return fetchRes;
-}
-
 async function respondWithSpliced() {
   const res = await caches.match("/");
   const clonedRes = res.clone();
@@ -205,6 +193,10 @@ app.get("/complete", (req, e) => {
   return redirect("/");
 });
 
-app.registerCachedAssetsAndHandler(assets, respondWithCache);
+const cacheConfig = [
+  { cacheName: STATIC_CACHE_NAME, strategy: "cache-first", assets },
+];
+
+app.caches(cacheConfig);
 
 app.listen();
