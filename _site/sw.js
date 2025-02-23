@@ -112,7 +112,7 @@ function list(id, title, completed) {
   */
 function generateTodos(data) {
   return `
-    <ul slot="todo-list">
+    <ul slot="task-list">
       ${data
           .map(({ id, title, completed }) => list(id, title, completed))
           .join("")
@@ -127,14 +127,15 @@ function generateTodos(data) {
   * @returns {string}
   */
 function spliceResponseWithData(cachedContent, data) {
-  if (!data) {
+  if (!data || data.length === 0) {
     return cachedContent;
   }
 
-  const lazyBoundary = "<!-- lazy -->";
-  const [head, tail] = cachedContent.split(lazyBoundary);
+  const templateClosingTag = "</template>";
+  const [head, tail] = cachedContent.split(templateClosingTag);
   return `
     ${head}
+    ${templateClosingTag}
     ${generateTodos(data)}
     ${tail}
   `;
@@ -142,26 +143,6 @@ function spliceResponseWithData(cachedContent, data) {
 
 app.get("/", () => {
   return respondWithSpliced();
-});
-
-app.get("/postMessage1", (_, e) => {
- e.waitUntil(
-    post({ path: "first", count: 0, increment: 1 }, sanitizerBc)
-    .then((data) => {
-      console.log("New SW data:", data);
-    })
-  ); 
-  return redirect("/");
-});
-
-app.get("/postMessage2", (_, e) => {
- e.waitUntil(
-    post({ path: "second", count: 0, increment: 10 }, sanitizerBc)
-    .then((data) => {
-      console.log("New SW data:", data);
-    })
-  ); 
-  return redirect("/");
 });
 
 app.post("/create", (req, e) => {

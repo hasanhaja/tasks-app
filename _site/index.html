@@ -11,35 +11,29 @@
     <script src="htmx.min.js"></script>
   </head>
   <body>
-    <template shadowrootmode="open">
-      <header>
-        <h1 class="sr-only">Tasks Home Screen</h1>
-        <nav>
-          <ul>
-            <li>Home</li>
-            <li>Settings</li>
-          </ul>
-        </nav>
-      </header>
-      <main>
-        <a id="first" href="/postMessage1">1 Post message</a>
-        <a id="second" href="/postMessage2">2 Post message</a>
+    <header>
+      <h1 class="sr-only">Tasks App Home</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/settings">Settings</a></li>
+        </ul>
+      </nav>
+    </header>
 
+    <main>
+      <a href="/new" id="new-task" class="btn btn-primary">
+        <span>+</span>
+        <span class="sr-only">New task</span>
+      </a>
+      <template shadowrootmode="open">
         <section>
-          <form action="/create" method="POST">
-            <label>
-              <span>Title</span>
-              <input name="title" type="text" required>
-            </label>
-            <button type="submit">Add</button>
-          </form>
+          <h2>Inbox</h2>
+          <div>
+            <slot name="task-list">All done!</slot>
+          </div>
         </section>
-        <section>
-          <h2>Todos</h2>
-          <slot name="todo-list">All done!</slot>
-        </section>
-      </main>
-    </template>
-    <!-- lazy -->
+      </template>
+    </main>
   </body>
 </html>
