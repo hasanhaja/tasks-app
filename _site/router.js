@@ -4,6 +4,7 @@ export class Router {
   #getHandlers;
   #postHandlers;
   #putHandlers;
+  #patchHandlers;
   #deleteHandlers;
 
   #cacheMap;
@@ -12,6 +13,7 @@ export class Router {
     this.#getHandlers = new Map();
     this.#postHandlers = new Map();
     this.#putHandlers = new Map();
+    this.#patchHandlers = new Map();
     this.#deleteHandlers = new Map();
 
     this.#cacheMap = new Map();
@@ -27,6 +29,10 @@ export class Router {
 
   put(path, handler) {
     this.#putHandlers.set(path, handler);
+  }
+
+  patch(path, handler) {
+    this.#patchHandlers.set(path, handler);
   }
 
   delete(path, handler) {
@@ -76,6 +82,9 @@ export class Router {
           break;
         case "PUT":
           handler = this.#putHandlers.get(path);
+          break;
+        case "PATCH":
+          handler = this.#patchHandlers.get(path);
           break;
         case "DELETE":
           handler = this.#deleteHandlers.get(path);

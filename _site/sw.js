@@ -78,6 +78,17 @@ function completeTodo(todo) {
   };
 }
 
+/**
+  * @param {TodoItem} todo
+  * @returns {TodoItem}
+  */
+function uncompleteTodo(todo) {
+  return {
+    ...todo,
+    completed: false,
+  };
+}
+
 async function respondWithSpliced() {
   const res = await caches.match("/");
   const clonedRes = res.clone();
@@ -100,12 +111,30 @@ async function redirect(path) {
 
 function list(id, title, completed) {
   return `
-    <li>
-      ${ completed ? 
-          `<s>${title}</s> <a href="/delete?id=${id}">Delete</a>` 
-        : `<a href="/complete?id=${id}">Complete</a> ${title} <a href="/delete?id=${id}">Delete</a>`}
+    <li id="task-${id}">
+      <label>
+        <input 
+          type="checkbox" 
+          hx-patch="${completed ? `/uncomplete?id=${id}` : `/complete?id=${id}`}"
+          hx-trigger="change"
+          hx-target="#task-${id}"
+          hx-swap="outerHTML"
+          ${completed ? "checked" : ""}
+        >
+        ${ completed ?
+            `<span><s>${title}</s></span>` 
+          : `<span>${title}</span>`
+        }
+      </label>
     </li>
   `;
+  // return `
+  //   <li>
+  //     ${ completed ? 
+  //         `<s>${title}</s> <a href="/delete?id=${id}">Delete</a>` 
+  //       : `<a href="/complete?id=${id}">Complete</a> ${title} <a href="/delete?id=${id}">Delete</a>`}
+  //   </li>
+  // `;
 }
 
 /**
@@ -168,12 +197,32 @@ app.get("/delete", (req, e) => {
   return redirect("/");
 });
 
-app.get("/complete", (req, e) => {
+app.patch("/complete", async (req, e) => {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   e.waitUntil(db.update(id, completeTodo));
+
+  const todo = await db.get(id);
+  const newBody = list(todo.id, todo.title, todo.completed);
  
-  return redirect("/");
+  return new Response(newBody, {
+    status: 200,
+    statusText: "OK",
+  });
+});
+
+app.patch("/uncomplete", async (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  e.waitUntil(db.update(id, uncompleteTodo));
+
+  const todo = await db.get(id);
+  const newBody = list(todo.id, todo.title, todo.completed);
+ 
+  return new Response(newBody, {
+    status: 200,
+    statusText: "OK",
+  });
 });
 
 const cacheConfig = [
