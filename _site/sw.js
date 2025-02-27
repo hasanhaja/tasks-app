@@ -17,6 +17,8 @@ const sanitizerBc = new BroadcastChannel("html-sanitizer");
 const assets = [
   "/",
   "/index.html",
+  "/new.html",
+  "/new",
   "/main.js",
   "/htmx.min.js",
   "/app.webmanifest",

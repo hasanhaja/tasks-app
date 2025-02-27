@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tasks | New task</title>
+    <link href="main.css" rel="stylesheet">
+    <!-- TODO design favicon -->
+    <!-- <link rel="icon" href="favicon.ico" /> -->
+
+    <script type="module" src="main.js"></script>
+    <!-- <link rel="manifest" href="app.webmanifest"> -->
+    <script src="htmx.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1 class="sr-only">New task</h1>
+    </header>
+
+    <main>
+      <form method="POST" action="/create">
+        <label>
+          <span>Task name</span>
+          <input type="text" name="task">
+        </label>
+        <button type="submit">Create</button>
+      </form>
+    </main>
+  </body>
+</html>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SW Todos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tasks</title>
     <link href="main.css" rel="stylesheet">
     <!-- TODO design favicon -->
     <!-- <link rel="icon" href="favicon.ico" /> -->
@@ -16,23 +18,24 @@
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/settings">Settings</a></li>
+          <li><a href="/settings.html">Settings</a></li>
         </ul>
       </nav>
     </header>
 
     <main>
-      <a href="/new" id="new-task" class="btn btn-primary">
-        <span>+</span>
-        <span class="sr-only">New task</span>
-      </a>
       <template shadowrootmode="open">
+        <link href="main.css" rel="stylesheet">
         <section>
           <h2>Inbox</h2>
           <div>
             <slot name="task-list">All done!</slot>
           </div>
         </section>
+        <a href="/new" id="new-task" class="btn">
+          <span>+</span>
+          <span class="sr-only">New task</span>
+        </a>
       </template>
     </main>
   </body>
