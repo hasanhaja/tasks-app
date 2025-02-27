@@ -71,21 +71,10 @@ function createTodo(title) {
   * @param {TodoItem} todo
   * @returns {TodoItem}
   */
-function completeTodo(todo) {
+function toggleTodo(todo) {
   return {
     ...todo,
-    completed: true,
-  };
-}
-
-/**
-  * @param {TodoItem} todo
-  * @returns {TodoItem}
-  */
-function uncompleteTodo(todo) {
-  return {
-    ...todo,
-    completed: false,
+    completed: !todo.completed,
   };
 }
 
@@ -115,7 +104,7 @@ function list(id, title, completed) {
       <label>
         <input 
           type="checkbox" 
-          hx-patch="${completed ? `/uncomplete?id=${id}` : `/complete?id=${id}`}"
+          hx-patch="/complete?id=${id}"
           hx-trigger="change"
           hx-target="#task-${id}"
           hx-swap="outerHTML"
@@ -200,21 +189,7 @@ app.get("/delete", (req, e) => {
 app.patch("/complete", async (req, e) => {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
-  e.waitUntil(db.update(id, completeTodo));
-
-  const todo = await db.get(id);
-  const newBody = list(todo.id, todo.title, todo.completed);
- 
-  return new Response(newBody, {
-    status: 200,
-    statusText: "OK",
-  });
-});
-
-app.patch("/uncomplete", async (req, e) => {
-  const url = new URL(req.url);
-  const id = url.searchParams.get("id");
-  e.waitUntil(db.update(id, uncompleteTodo));
+  e.waitUntil(db.update(id, toggleTodo));
 
   const todo = await db.get(id);
   const newBody = list(todo.id, todo.title, todo.completed);
