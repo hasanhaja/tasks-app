@@ -9,7 +9,7 @@ const DYNAMIC_CACHE_NAME = `dynamic-cache`;
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
 
-let db;
+let db = new DBDriver(DATABASE_NAME, STORE_NAME);
 const app = new Router();
 
 const sanitizerBc = new BroadcastChannel("html-sanitizer");
@@ -27,7 +27,6 @@ const assets = [
 
 async function init() {
   await cacheStatic(STATIC_CACHE_NAME, assets);
-  db = new DBDriver(DATABASE_NAME, STORE_NAME);
 }
 
 self.addEventListener("install", (e) => {
