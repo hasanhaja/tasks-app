@@ -93,8 +93,10 @@ async function respondWithSpliced() {
   });
 }
 
-async function redirect(path) {
-  return Response.redirect(path, 303);
+async function redirect(path, isHtmx = false) {
+  return isHtmx 
+    ? new Response(null, { headers: new Headers({ "HX-Redirect": path }) })
+    : Response.redirect(path, 303);
 }
 
 function list(id, title, completed) {
@@ -114,6 +116,10 @@ function list(id, title, completed) {
           : `<span>${title}</span>`
         }
       </label>
+      ${ completed ?
+        ""
+        : `<a href="/edit?id=${id}">Edit</a>`
+      }
     </li>
   `;
   // return `
@@ -183,6 +189,67 @@ app.get("/delete", (req, e) => {
   e.waitUntil(db.del(id));
   
   return redirect("/");
+});
+
+function editPage(id, title) {
+  return `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tasks | Edit task</title>
+    <link href="main.css" rel="stylesheet">
+
+    <script type="module" src="main.js"></script>
+    <script src="htmx.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1 class="sr-only">Edit task</h1>
+    </header>
+
+    <main>
+      <form hx-patch="/edit?id=${id}">
+        <label>
+          <span>Task name</span>
+          <input type="text" name="task" value="${title}">
+        </label>
+        <button type="submit">Update</button>
+      </form>
+    </main>
+  </body>
+</html>
+  `;
+}
+
+app.get("/edit", async (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+
+  const todo = await db.get(id);
+  const page = editPage(id, todo.title);
+
+  return new Response(page, {
+    status: 200,
+    statusText: "OK",
+    headers: new Headers({ "Content-Type": "text/html; charset=utf-8" }),
+  });
+});
+
+app.patch("/edit", async (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+
+  e.waitUntil(
+   req.text()
+    .then((text) => new URLSearchParams(text))
+    .then(([title, _]) => title)
+    .then(([, value]) => escapeHtml(value))
+    .then((value) => db.update(id, (todo) => ({...todo, title: value})))
+  );
+ 
+  return redirect("/", true);
 });
 
 app.patch("/complete", async (req, e) => {
