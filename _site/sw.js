@@ -126,7 +126,7 @@ function list(id, title, completed) {
   */
 function generateTodos(data) {
   return `
-    <ul slot="task-list">
+    <ul slot="task-list" class="task-list">
       ${data
           .map(({ id, title, completed }) => list(id, title, completed))
           .join("")
