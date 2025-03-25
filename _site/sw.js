@@ -113,22 +113,11 @@ function list(id, title, completed) {
         >
         ${ completed ?
             `<span><s>${title}</s></span>` 
-          : `<span>${title}</span>`
+          : `<a href="/edit?id=${id}"><span class="sr-only">Edit</span><span>${title}</span></a>`
         }
       </label>
-      ${ completed ?
-        ""
-        : `<a href="/edit?id=${id}">Edit</a>`
-      }
     </li>
   `;
-  // return `
-  //   <li>
-  //     ${ completed ? 
-  //         `<s>${title}</s> <a href="/delete?id=${id}">Delete</a>` 
-  //       : `<a href="/complete?id=${id}">Complete</a> ${title} <a href="/delete?id=${id}">Delete</a>`}
-  //   </li>
-  // `;
 }
 
 /**
