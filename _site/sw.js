@@ -23,6 +23,7 @@ const assets = [
   "/htmx.min.js",
   "/app.webmanifest",
   "/main.css",
+  "/autofocus-input.js",
 ];
 
 async function init() {
@@ -191,6 +192,7 @@ function editPage(id, title) {
     <link href="main.css" rel="stylesheet">
 
     <script type="module" src="main.js"></script>
+    <script type="module" src="autofocus-input.js"></script>
     <script src="htmx.min.js"></script>
   </head>
   <body>
@@ -199,12 +201,16 @@ function editPage(id, title) {
     </header>
 
     <main>
+      <h2>Edit</h2>
       <form hx-patch="/edit?id=${id}">
         <label>
           <span>Task name</span>
-          <input type="text" name="task" value="${title}">
+
+          <autofocus-input>
+            <textarea name="task" autofocus>${title}</textarea>
+          </autofocus-input>
         </label>
-        <button type="submit">Update</button>
+        <button type="submit" class="btn">Update</button>
       </form>
     </main>
   </body>

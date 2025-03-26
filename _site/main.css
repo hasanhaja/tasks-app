@@ -234,11 +234,15 @@
     transform: translateY(0.075rem) translateX(0.075rem);
   }
 
+  /* TODO Move this to a different style */
+  main {
+    padding-inline: 0.5rem;
+  }
+
   .task-list {
     list-style: none;
     display: grid;
     gap: 0.5rem;
-    padding-inline: 0.5rem;
   }
 
   .task-list li {
@@ -293,6 +297,27 @@
 
     &:checked::before {
       transform: scale(1);
+    }
+  }
+
+  form, form label {
+    display: grid;
+  }
+
+  form {
+    gap: 4rem;
+  }
+
+  form label {
+    gap: 1rem;
+
+    & textarea {
+      width: 100%;
+      resize: none;
+      field-sizing: content;
+      padding: 0.5rem;
+
+      font: inherit;
     }
   }
 }
