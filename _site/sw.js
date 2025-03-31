@@ -207,7 +207,7 @@ function editPage(id, title) {
           <span>Task name</span>
 
           <autofocus-input>
-            <textarea name="task" autofocus required>${title}</textarea>
+            <textarea name="task" autofocus required class="input">${title}</textarea>
           </autofocus-input>
         </label>
         <button type="submit" class="btn">Update</button>
