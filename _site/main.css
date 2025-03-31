@@ -161,6 +161,7 @@
 
 @layer theme {
   :root {
+    /* Primitive tokens */
     /* Colors */
     /* Picked with the help of https://oklch.com */
     --clr-primary-100: oklch(97% 0.013 66.29); 
@@ -174,6 +175,12 @@
 
     --font-heading: "Lilita One", sans-serif;
     --font-text: 'Quicksand', sans-serif;
+
+    /* Semantic tokens */
+    --clr-shadow: #212121;
+    --border-thickness: 3px;
+    --shadow-default: 0.15rem 0.15rem var(--clr-shadow);
+    --shadow-pressed: 0 0 var(--clr-shadow);
   }
 
   blockquote > p::before {
@@ -212,11 +219,11 @@
     --primary-button-color: #138086;
     background-color: var(--primary-button-color);
     color: #fff;
-    border: none;
+    border: var(--border-thickness) solid var(--clr-shadow);
     padding-inline: 2rem;
     padding-block: 1.5rem;
     border-radius: 0.8rem;
-    box-shadow: 0.15rem 0.15rem #212121;
+    box-shadow: var(--shadow-default);
 
     transition: box-shadow 75ms ease-in-out;
   }
@@ -230,7 +237,7 @@
   }
 
   .btn:active {
-    box-shadow: 0 0 #212121;
+    box-shadow: var(--shadow-pressed);
     transform: translateY(0.075rem) translateX(0.075rem);
   }
 
@@ -323,6 +330,7 @@
 }
 
 @layer utilities {
+  /* TODO Clean this naming up */
   .shadow {
     --_thickness: 0.25rem;
 
