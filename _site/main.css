@@ -206,10 +206,6 @@
     border-radius: var(--_quote-border-thickness) 0 0 var(--_quote-border-thickness);
   }
 
-  body {
-    background-color: lightgrey;
-  }
-
   @media(prefers-color-scheme: dark) {
     /* --clr-primary-100: oklch(94.11% 0.04 66.29);  */
     /* --clr-primary-300: oklch(88.67% 0.08 66.29);  */
@@ -223,6 +219,12 @@
 
 /* TODO For component tokens and component styling */
 @layer components {
+  .title {
+    font-size: 4rem;
+    line-height: 1;
+    padding-block-start: 2rem;
+  }
+
   header:has(.floating-menu) {
     padding-inline: 0.5rem;
   }
@@ -300,6 +302,7 @@
     padding-inline: 0.5rem;
   }
 
+  /* Task list START */
   .task-list {
     list-style: none;
     display: grid;
@@ -307,16 +310,8 @@
   }
 
   .task-list li {
-    background-color: white;
-
     padding-block: 0.5rem;
     padding-inline: 0.25rem;
-    border: 1px solid black;
-    border-radius: 0.25rem;
-
-    &:has(input[type="checkbox"]:checked) {
-      background-color: darkgrey;
-    }
   }
 
   .task-list label {
@@ -360,6 +355,7 @@
       transform: scale(1);
     }
   }
+  /* Task list END */
 
   form, form label {
     display: grid;
