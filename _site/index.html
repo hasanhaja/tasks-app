@@ -44,12 +44,28 @@
             <slot name="task-list">All done!</slot>
           </div>
         </section>
-        <section>
-          <h2>Completed</h2>
-          <div>
-            <slot name="completed-list">You've got this!</slot>
-          </div>
-        </section>
+        <!-- TODO Filters -->
+        <div>
+          <!-- TODO fire HTMX request on change... does this need to be a form? -->
+          <form>
+            <fieldset>
+              <label>
+                <input type="radio" name="task-filter" value="active">
+                <span>active</span>
+              </label>
+
+              <label>
+                <input type="radio" name="task-filter" value="completed">
+                <span>Completed</span>
+              </label>
+
+              <label>
+                <input type="radio" name="task-filter" value="all" checked>
+                <span>All</span>
+              </label>
+            </fieldset>
+          </form>
+        </div>
       </template>
     </main>
   </body>

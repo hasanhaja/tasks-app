@@ -300,6 +300,7 @@
   /* TODO Move this to a different style */
   main {
     padding-inline: 0.5rem;
+    padding-block-end: 25vh;
   }
 
   /* Task list START */
@@ -318,6 +319,12 @@
     display: flex;
     gap: 0.8rem;
     align-items: center;
+  }
+
+  .task-list label > span {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
   }
 
   .task-list input[type="checkbox"] {
@@ -359,6 +366,13 @@
       /* TODO Replace with component or semantic token */
       background-color: var(--clr-accent-500);
     }
+  }
+
+  .edit-task svg {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    vertical-align: middle;
   }
   /* Task list END */
 
