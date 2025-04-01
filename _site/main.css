@@ -354,6 +354,11 @@
     &:checked::before {
       transform: scale(1);
     }
+
+    &:checked {
+      /* TODO Replace with component or semantic token */
+      background-color: var(--clr-accent-500);
+    }
   }
   /* Task list END */
 
