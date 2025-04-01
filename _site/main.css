@@ -223,6 +223,44 @@
 
 /* TODO For component tokens and component styling */
 @layer components {
+  header:has(.floating-menu) {
+    padding-inline: 0.5rem;
+  }
+
+  .floating-menu {
+    background-color: var(--bg-base);
+
+    position: fixed;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-default);
+    inset: auto 0.5rem 1.25rem;
+
+    padding-inline: 0.75rem;
+    padding-block: 0.5rem;
+
+    z-index: 1;
+  }
+
+  .floating-menu ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .floating-menu:has(.btn) .btn {
+    --primary-button-color: var(--clr-inverted-100);
+    padding-inline: 1.5rem;
+    padding-block: 1rem;
+  }
+
+  /* TODO Placeholder until I sort out font awesome icons */
+  .floating-menu:has(.btn) .btn svg {
+    width: 2rem;
+    height: 2rem;
+    fill: inherit;
+  }
+
   .input {
     --border-radius: 0.5rem;
     border: var(--border);
@@ -245,6 +283,7 @@
 
   a.btn {
     text-decoration: none;
+    display: inline-block;
   }
   
   .btn:hover {
@@ -379,10 +418,4 @@
       border-radius: inherit;
     }
   }
-}
-
-#new-task {
-  position: absolute;
-  inset: auto 1.25rem 1.25rem auto;
-  font-size: 2.5rem;
 }
