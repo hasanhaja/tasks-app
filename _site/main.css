@@ -328,63 +328,63 @@
     list-style: none;
     display: grid;
     gap: 0.5rem;
-  }
 
-  .task-list li {
-    padding-block: 0.5rem;
-    padding-inline: 0.25rem;
-  }
-
-  .task-list label {
-    display: flex;
-    gap: 0.8rem;
-    align-items: center;
-  }
-
-  .task-list label > span {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .task-list input[type="checkbox"] {
-    --_size: 1.75rem;
-    /* Reset */
-    appearance: none;
-    margin: 0;
-
-    flex-shrink: 0;
-
-    font: inherit;
-    color: currentColor;
-    width: var(--_size);
-    height: var(--_size);
-    border: 0.15rem solid currentColor;
-    border-radius: 0.25rem;
-    transform: translateY(-0.075rem);
-
-    display: grid;
-    place-content: center;
-
-    &::before {
-      content: "";
-      width: calc(var(--_size) * 0.6);
-      height: calc(var(--_size) * 0.6);
-      transform: scale(0);
-      transition: 120ms transform ease-in-out;
-      box-shadow: inset 1rem 1rem black;
-
-      transform-origin: bottom left;
-      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    li {
+      padding-block: 0.5rem;
+      padding-inline: 0.25rem;
     }
 
-    &:checked::before {
-      transform: scale(1);
+    label {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
     }
 
-    &:checked {
-      /* TODO Replace with component or semantic token */
-      background-color: var(--clr-accent-500);
+    label > span {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="checkbox"] {
+      --_size: 1.75rem;
+      /* Reset */
+      appearance: none;
+      margin: 0;
+
+      flex-shrink: 0;
+
+      font: inherit;
+      color: currentColor;
+      width: var(--_size);
+      height: var(--_size);
+      border: 0.15rem solid currentColor;
+      border-radius: 0.25rem;
+      transform: translateY(-0.075rem);
+
+      display: grid;
+      place-content: center;
+
+      &::before {
+        content: "";
+        width: calc(var(--_size) * 0.6);
+        height: calc(var(--_size) * 0.6);
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        box-shadow: inset 1rem 1rem black;
+
+        transform-origin: bottom left;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      }
+
+      &:checked::before {
+        transform: scale(1);
+      }
+
+      &:checked {
+        /* TODO Replace with component or semantic token */
+        background-color: var(--clr-accent-500);
+      }
     }
   }
 
