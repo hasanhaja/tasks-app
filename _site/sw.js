@@ -117,7 +117,7 @@ function list(id, title, completed) {
           : `
             <span>
               <span>${title}</span>
-              <button popovertarget="task-menu__${id}">
+              <button popovertarget="task-menu__${id}" style="anchor-name: --menu-button-${id}">
                 <span class="sr-only">Open menu</span>
                 <span class="edit-task">
                   <!-- TODO Replace with font awesome icon -->
@@ -130,7 +130,7 @@ function list(id, title, completed) {
       </label>
 
       ${ completed ? "" : `
-        <div popover id="task-menu__${id}">
+        <div popover id="task-menu__${id}" style="position-anchor: --menu-button-${id}">
           <ul>
             <li>
               <a class="btn" data-variant="delete-task" href="/delete?id=${id}">

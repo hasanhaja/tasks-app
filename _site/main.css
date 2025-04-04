@@ -403,8 +403,16 @@
   [popover] {
     --btn__padding-block: 0.5rem;
     --btn__padding-inline: 0.5rem;
-    /* TODO Anchor positioning */
-    inset: 10vh 2rem auto auto;
+
+    /* Reset */
+    position: absolute;
+    margin: 0;
+    inset: auto;
+
+    top: anchor(bottom);
+    right: anchor(right);
+    margin-block-start: 0.25rem;
+
     border: var(--border);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-default);
