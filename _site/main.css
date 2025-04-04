@@ -325,6 +325,9 @@
 
   /* Task list START */
   .task-list {
+    --task-list__clr-checkbox: var(--clr-accent-500);
+    --task-list__checkbox-size: 2rem;
+
     list-style: none;
     display: grid;
     gap: 0.5rem;
@@ -347,7 +350,10 @@
     }
 
     input[type="checkbox"] {
-      --_size: 1.75rem;
+      --_clr-checkbox: var(--task-list__clr-checkbox);
+      --_size: var(--task-list__checkbox-size);
+      --_shadow-size: calc(var(--_size) * 0.08);
+
       /* Reset */
       appearance: none;
       margin: 0;
@@ -355,12 +361,14 @@
       flex-shrink: 0;
 
       font: inherit;
+      background-color: var(--bg-base);
       color: currentColor;
       width: var(--_size);
       height: var(--_size);
       border: 0.15rem solid currentColor;
       border-radius: 0.25rem;
       transform: translateY(-0.075rem);
+      box-shadow: inset 0 calc(var(--_shadow-size) * -1) var(--clr-shadow);
 
       display: grid;
       place-content: center;
@@ -370,7 +378,6 @@
         width: calc(var(--_size) * 0.6);
         height: calc(var(--_size) * 0.6);
         transform: scale(0);
-        transition: 120ms transform ease-in-out;
         box-shadow: inset 1rem 1rem black;
 
         transform-origin: bottom left;
@@ -382,8 +389,11 @@
       }
 
       &:checked {
-        /* TODO Replace with component or semantic token */
-        background-color: var(--clr-accent-500);
+        --_shadow-size: calc(var(--_size) * 0.02);
+        background-color: var(--_clr-checkbox);
+        box-shadow: 
+          inset calc(var(--_shadow-size) * -1) calc(var(--_shadow-size) * -1) var(--clr-shadow),
+          inset var(--_shadow-size) var(--_shadow-size) var(--clr-shadow);
       }
     }
   }
