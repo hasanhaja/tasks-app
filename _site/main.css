@@ -251,9 +251,9 @@
   }
 
   .floating-menu:has(.btn) .btn {
-    --primary-button-color: var(--clr-inverted-100);
-    padding-inline: 1.5rem;
-    padding-block: 1rem;
+    --btn__clr-bg: var(--clr-inverted-100);
+    --btn__padding-inline: 1.5rem;
+    --btn__padding-block: 1rem;
   }
 
   /* TODO Placeholder until I sort out font awesome icons */
@@ -271,30 +271,50 @@
 
   /* TODO For slightly better organization, label component styling or move to nested layer */
   .btn {
-    --primary-button-color: #138086;
-    background-color: var(--primary-button-color);
+    --btn__padding-block: 1.5rem;
+    --btn__padding-inline: 2rem;
+    --btn__clr-bg: #138086;
+
+    --_clr-bg: var(--btn__clr-bg);
+    --_shadow-size: 0.15rem;
+    
+    background-color: var(--_clr-bg);
     color: #fff;
     border: var(--border);
-    padding-inline: 2rem;
-    padding-block: 1.5rem;
+    padding-inline: var(--btn__padding-inline);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-default);
 
-    transition: box-shadow 75ms ease-in-out;
-  }
+    padding-block-start: calc(var(--btn__padding-block) - var(--_shadow-size));
+    padding-block-end: var(--btn__padding-block);
+    box-shadow: inset 0 calc(var(--_shadow-size) * -1) var(--clr-shadow);
 
-  a.btn {
-    text-decoration: none;
-    display: inline-block;
-  }
-  
-  .btn:hover {
-    filter: brightness(0.8);
-  }
+    &:hover {
+      background-color: oklch(from var(--_clr-bg) calc(l - 0.1) c h);
+    }
 
-  .btn:active {
-    box-shadow: var(--shadow-pressed);
-    transform: translateY(0.075rem) translateX(0.075rem);
+    &:active {
+      background-color: oklch(from var(--_clr-bg) calc(l - 0.2) c h);
+
+      box-shadow: none;
+      transform: translateY(var(--_shadow-size));
+      padding-block-end: calc(var(--btn__padding-block) - var(--_shadow-size));
+      margin-block-end: var(--_shadow-size);
+    }
+
+    /* Link variant */
+    &:is(a) {
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: 
+        transform 75ms ease-in-out,
+        background-color 75ms ease-in-out,
+        box-shadow 75ms ease-in-out,
+        padding 75ms ease-in-out,
+        margin 75ms ease-in-out;
+    }
   }
 
   /* TODO Move this to a different style */
