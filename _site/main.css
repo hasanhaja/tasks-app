@@ -397,6 +397,9 @@
       background-color: unset;
       border: unset;
       padding-inline: 0.5rem;
+
+      /* NOTE Both anchor-name and attr() for any attribute is experimental */
+      anchor-name: attr(popovertarget);
     }
   }
 
@@ -408,6 +411,9 @@
     position: absolute;
     margin: 0;
     inset: auto;
+
+    /* NOTE Both position-anchor and attr() for any attribute is experimental */
+    position-anchor: attr(id);
 
     top: anchor(bottom);
     right: anchor(right);
