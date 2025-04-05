@@ -275,13 +275,15 @@
     --_padding-block: var(--btn__padding-block, 1.5rem);
     --_padding-inline: var(--btn__padding-inline, 2rem);
     --_clr-bg: var(--btn__clr-bg, #138086);
+    --_text: var(--btn__text, #fff);
+    --_border-radius: var(--btn__border-radius, var(--border-radius));
     --_shadow-size: 0.15rem;
     
     background-color: var(--_clr-bg);
-    color: #fff;
+    color: var(--_text);
     border: var(--border);
     padding-inline: var(--_padding-inline);
-    border-radius: var(--border-radius);
+    border-radius: var(--_border-radius);
 
     padding-block-start: calc(var(--_padding-block) - var(--_shadow-size));
     padding-block-end: var(--_padding-block);
@@ -438,6 +440,59 @@
     [data-variant="edit-task"] {
       --btn__clr-bg: var(--clr-blue-500);
     }
+  }
+
+  dialog {
+    margin: 0;
+    inset: auto;
+    max-width: 350px;
+
+    border: var(--border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-default);
+
+    [method="dialog"] {
+      display: grid;
+      padding: 0.5rem;
+      gap: 1rem;
+
+      & > div {
+        --btn__padding-block: 0.8rem;
+        --btn__padding-inline: 0.8rem;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+
+    [data-variant="close-dialog"] {
+      --btn__clr-bg: var(--bg-base);
+      --btn__border-radius: 45%;
+      --btn__padding-inline: 0.5rem;
+      --btn__padding-block: 0.5rem;
+      max-width: fit-content;
+      justify-self: end;
+
+      /* TODO Placeholder until I sort out font awesome icons */
+      & > span:not(.sr-only) > svg {
+        width: 1rem;
+        height: 1rem;
+        fill: inherit;
+      }
+    }
+
+    [data-variant="delete"] {
+      --btn__clr-bg: var(--clr-red-500);
+    }
+
+    [data-variant="neutral"] {
+      --btn__clr-bg: var(--bg-base);
+      --btn__text: var(--text-base);
+    }
+  }
+
+  ::backdrop {
+    background-color: grey;
+    opacity: 0.9;
   }
 
   .edit-task svg {
