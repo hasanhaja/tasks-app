@@ -133,7 +133,15 @@ function list(id, title, completed) {
         <div popover id="task-menu__${id}">
           <ul>
             <li>
-              <a class="btn" data-variant="delete-task" href="/delete?id=${id}">
+              <a
+                class="btn"
+                data-variant="delete-task"
+                href="/delete?id=${id}"
+                hx-delete="/delete?id=${id}"
+                hx-confirm="Are you sure you wish to delete this task?"
+                hx-swap="delete"
+                hx-target="#task-${id}"
+              >
                 Delete
               </a>
             </li>
@@ -207,6 +215,18 @@ app.get("/delete", (req, e) => {
   e.waitUntil(db.del(id));
   
   return redirect("/");
+});
+
+app.delete("/delete", (req, e) => {
+  const url = new URL(req.url);
+  const id = url.searchParams.get("id");
+  e.waitUntil(db.del(id));
+
+  return new Response(null, {
+    status: 200,
+    statusText: "OK",
+  });
+
 });
 
 function editPage(id, title) {
