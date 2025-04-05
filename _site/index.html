@@ -41,6 +41,25 @@
         <section>
           <h2 class="title">Tasks</h2>
           <div>
+            <!-- TODO fire HTMX request on change... does this need to be a form? -->
+            <form class="task-filter">
+              <fieldset>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="all" checked>
+                  <span>All</span>
+                </label>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="done">
+                  <span>Done</span>
+                </label>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="active">
+                  <span>Active</span>
+                </label>
+              </fieldset>
+            </form>
+          </div>
+          <div>
             <task-list>
               <template shadowrootmode="open">
                 <slot name="task-list">All done!</slot>
@@ -66,28 +85,6 @@
           </div>
         </form>
       </dialog>
-      <!-- TODO Filters -->
-      <div>
-        <!-- TODO fire HTMX request on change... does this need to be a form? -->
-        <form>
-          <fieldset>
-            <label>
-              <input type="radio" name="task-filter" value="active">
-              <span>active</span>
-            </label>
-
-            <label>
-              <input type="radio" name="task-filter" value="completed">
-              <span>Completed</span>
-            </label>
-
-            <label>
-              <input type="radio" name="task-filter" value="all" checked>
-              <span>All</span>
-            </label>
-          </fieldset>
-        </form>
-      </div>
     </main>
   </body>
 </html>
