@@ -40,9 +40,9 @@
       <htmx-confirmation-handler confirmation-dialog="task-delete-confirmation">
         <section>
           <h2 class="title">Tasks</h2>
-          <div>
+          <div class="controls-panel">
             <!-- TODO fire HTMX request on change... does this need to be a form? -->
-            <form class="task-filter">
+            <form class="task-controls" data-variant="filter">
               <fieldset>
                 <label class="btn">
                   <input type="radio" name="task-filter" value="all" checked>
@@ -58,6 +58,19 @@
                 </label>
               </fieldset>
             </form>
+            <form class="task-controls" data-variant="sort">
+              <fieldset>
+                <label class="btn">
+                  <input type="radio" name="task-sort" value="active">
+                  <span>Active</span>
+                </label>
+                <label class="btn">
+                  <input type="radio" name="task-sort" value="unsorted" checked>
+                  <span>Unsorted</span>
+                </label>
+              </fieldset>
+            </form>
+
           </div>
           <div>
             <task-list>

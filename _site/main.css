@@ -334,7 +334,20 @@
     }
   }
 
-  .task-filter {
+  .controls-panel {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .task-controls {
+    &[data-variant="filter"] label:has(input[type="radio"]:checked) {
+      --btn__clr-bg: var(--clr-accent-500);
+    }
+
+    &[data-variant="sort"] label:has(input[type="radio"]:checked) {
+      --btn__clr-bg: var(--clr-blue-500);
+    }
+
     fieldset {
       border: var(--border);
       border-radius: var(--border-radius);
@@ -356,7 +369,6 @@
         text-align: center;
 
         &:has(input[type="radio"]:checked) {
-          --btn__clr-bg: var(--clr-accent-500);
           --btn__text: #fff;
         }
       }
