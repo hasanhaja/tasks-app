@@ -443,9 +443,9 @@
   }
 
   dialog {
-    margin: 0;
-    inset: auto;
-    max-width: 350px;
+    inset: 0;
+    margin: auto;
+    max-width: 35ch;
 
     border: var(--border);
     border-radius: var(--border-radius);
@@ -454,12 +454,19 @@
     [method="dialog"] {
       display: grid;
       padding: 0.5rem;
+      padding-block-end: 1rem;
       gap: 1rem;
+
+      & > p,
+      & > div {
+        padding-inline: 0.5rem;
+      }
 
       & > div {
         --btn__padding-block: 0.8rem;
         --btn__padding-inline: 0.8rem;
         display: flex;
+        gap: 0.5rem;
         justify-content: space-between;
       }
     }
@@ -488,11 +495,11 @@
       --btn__clr-bg: var(--bg-base);
       --btn__text: var(--text-base);
     }
-  }
 
-  ::backdrop {
-    background-color: grey;
-    opacity: 0.9;
+    &::backdrop {
+      background-image: linear-gradient(in oklch 45deg, var(--clr-red-500), var(--clr-blue-500));
+      opacity: 0.4;
+    }
   }
 
   .edit-task svg {
