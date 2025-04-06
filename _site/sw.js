@@ -8,8 +8,14 @@ const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
 const DYNAMIC_CACHE_NAME = `dynamic-cache`;
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
+const APP_STATE_STORE_NAME = "app-state";
 
-let db = new DBDriver(DATABASE_NAME, STORE_NAME);
+let db = new DBDriver(DATABASE_NAME, [STORE_NAME, APP_STATE_STORE_NAME]);
+
+const DEFAULT_APP_STATE = {
+  "task-filter": "all",
+};
+
 const app = new Router();
 
 const sanitizerBc = new BroadcastChannel("html-sanitizer");
@@ -29,6 +35,19 @@ const assets = [
 
 async function init() {
   await cacheStatic(STATIC_CACHE_NAME, assets);
+}
+
+/**
+  * @returns { Promise<string> }
+  */
+async function getFilterState() {
+  const appStore = db.store(APP_STATE_STORE_NAME);
+  const taskFilter = await db.get("task-filter", appStore);
+  if (taskFilter) {
+    return taskFilter;
+  }
+  await db.set("task-filter", DEFAULT_APP_STATE["task-filter"], appStore);
+  return DEFAULT_APP_STATE["task-filter"];
 }
 
 self.addEventListener("install", (e) => {
@@ -193,7 +212,9 @@ function spliceResponseWithData(cachedContent, data) {
   `;
 }
 
-app.get("/", () => {
+app.get("/", async () => {
+  const filter = await getFilterState();
+  console.log("DEBUG filter:", filter);
   return respondWithSpliced();
 });
 

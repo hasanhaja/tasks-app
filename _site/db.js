@@ -1,21 +1,73 @@
 // IndexedDB promise wrappers lifted from Jake Archibald's idb-keyval lib: https://github.com/jakearchibald/idb-keyval/blob/main/src/index.ts
 
 export class DBDriver {
+  /**
+    * Default store
+    * If multiple stores are created, the first in the storeNames list will be the default
+    */
   #store;
+  #stores;
 
-  constructor(databaseName, storeName) {
+  /**
+    * @param { string } databaseName
+    * @param { string[] | string } storeNames
+    */
+  constructor(databaseName, storeNames) {
     this.databaseName = databaseName;
-    this.storeName = storeName;
-    this.#store = DBDriver.#createStore(databaseName, storeName); 
+    // TODO This could be empty. Throw error if it is
+    this.storeNames = storeNames;
+
+    if (typeof storeNames === "string") {
+      this.#store = DBDriver.#createStore(databaseName, storeNames);
+    } else {
+      this.#stores = DBDriver.#createStores(databaseName, storeNames);
+    }
+  }
+
+  store(storeName) {
+    return this.#stores.get(storeName);
   }
 
   #defaultGetStore() {
     if (!this.#store) {
-      this.#store = DBDriver.#createStore(this.databaseName, this.storeName);
+      this.#store = typeof this.storeNames === "string"
+        ? DBDriver.#createStore(this.databaseName, this.storeName)
+        : this.#stores.get(this.storeNames[0]);
     }
     return this.#store;
   }
 
+  /**
+    * @params { string } dbName
+    * @params { string[] } storeNames
+    * @returns { Map }
+    */
+  static #createStores(dbName, storeNames) {
+    const request = self.indexedDB.open(dbName);
+    request.onupgradeneeded = () => {
+      for (const storeName of storeNames) {
+        request.result.createObjectStore(storeName);
+      }
+    };
+    const dbPromise = promisifyRequest(request);
+
+    const stores = new Map();
+    for (const storeName of storeNames) {
+      stores.set(
+        storeName,
+        (transactionMode, fn) =>
+          dbPromise.then((db) =>
+            fn(db.transaction(storeNames, transactionMode).objectStore(storeName))
+        )
+      );
+    }
+    return stores;
+  }
+
+  /**
+    * @params { string } dbName
+    * @params { string } storeName
+    */
   static #createStore(dbName, storeName) {
     const request = self.indexedDB.open(dbName);
     request.onupgradeneeded = () => request.result.createObjectStore(storeName);
