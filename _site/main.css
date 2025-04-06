@@ -344,10 +344,6 @@
       --btn__clr-bg: var(--clr-accent-500);
     }
 
-    &[data-variant="sort"] label:has(input[type="radio"]:checked) {
-      --btn__clr-bg: var(--clr-blue-500);
-    }
-
     fieldset {
       border: var(--border);
       border-radius: var(--border-radius);
