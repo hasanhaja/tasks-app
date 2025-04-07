@@ -310,6 +310,7 @@
 
     @media (prefers-reduced-motion: no-preference) {
       transition: 
+        border 75ms ease-in-out,
         color 75ms ease-in-out,
         transform 75ms ease-in-out,
         background-color 75ms ease-in-out,
@@ -342,6 +343,11 @@
   .task-controls {
     &[data-variant="filter"] label:has(input[type="radio"]:checked) {
       --btn__clr-bg: var(--clr-accent-500);
+    }
+
+    label:has(input[type="radio"]:not(:checked)) {
+      --clr-shadow: var(--bg-base);
+      --border: var(--border-thickness) solid var(--bg-base);
     }
 
     fieldset {
