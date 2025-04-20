@@ -185,24 +185,71 @@ function generateTodos(data) {
   `;
 }
 
+function generateFilterControls(filter) {
+  return `
+    <form
+      class="task-controls"
+      data-variant="filter"
+      hx-trigger="change"
+      hx-post="/set-filter"
+      hx-target="[slot='task-list']"
+      hx-swap="outerHTML"
+    >
+      <fieldset>
+        <label class="btn">
+          <input type="radio" name="task-filter" value="all" ${filter === "all" ? "checked" : ""}>
+          <span>All</span>
+        </label>
+        <label class="btn">
+          <input type="radio" name="task-filter" value="done" ${filter === "done" ? "checked" : ""}>
+          <span>Done</span>
+        </label>
+        <label class="btn">
+          <input type="radio" name="task-filter" value="active" ${filter === "active" ? "checked" : ""}>
+          <span>Active</span>
+        </label>
+      </fieldset>
+    </form>
+  `;
+}
+
 /**
   * @param {string} cachedContent 
   * @param {TodoItem[]} data
+  * @param { AppFilterState } filter
   * @returns {string}
   */
-function spliceResponseWithData(cachedContent, data) {
+function spliceResponseWithData(cachedContent, data, filter) {
   if (!data || data.length === 0) {
     return cachedContent;
   }
 
+  let page = cachedContent;
+  // Splice in current form controls to section
+  // TODO Clean up variable names or extract to functions
+  const controlPanelStart = `<div class="controls-panel">`;
+  const formEnd = "</form>";
+  const [h, t] = page.split(controlPanelStart);
+  const [_, ft] = t.split(formEnd);
+
+  page = `
+    ${h}
+    ${controlPanelStart}
+    ${generateFilterControls(filter)}
+    ${ft}
+  `;
+
+  // Splice in task-list content to slot
   const templateClosingTag = "</template>";
-  const [head, tail] = cachedContent.split(templateClosingTag);
-  return `
+  const [head, tail] = page.split(templateClosingTag);
+  page = `
     ${head}
     ${templateClosingTag}
     ${generateTodos(data)}
     ${tail}
   `;
+
+  return page;
 }
 
 /**
@@ -252,7 +299,8 @@ async function respondWithSpliced(filter) {
       }
     })
   ;
-  const newBody = spliceResponseWithData(originalBody, data);
+  // TODO Filter is being used in multiple places. Simplify!
+  const newBody = spliceResponseWithData(originalBody, data, filter);
 
   return new Response(newBody, {
     status: res.status,
