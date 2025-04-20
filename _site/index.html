@@ -42,7 +42,14 @@
           <h2 class="title">Tasks</h2>
           <div class="controls-panel">
             <!-- TODO fire HTMX request on change... does this need to be a form? -->
-            <form class="task-controls" data-variant="filter">
+            <form
+              class="task-controls"
+              data-variant="filter"
+              hx-trigger="change"
+              hx-post="/set-filter"
+              hx-target="[slot='task-list']"
+              hx-swap="outerHTML"
+            >
               <fieldset>
                 <label class="btn">
                   <input type="radio" name="task-filter" value="all" checked>

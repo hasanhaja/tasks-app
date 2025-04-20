@@ -50,6 +50,15 @@ async function getFilterState() {
   return DEFAULT_APP_STATE["task-filter"];
 }
 
+/**
+  * @param { AppFilterState } filter
+  * @returns { string }
+  */
+async function setFilterState(filter) {
+  const appStore = db.store(APP_STATE_STORE_NAME);
+  await db.set("task-filter", filter, appStore);
+}
+
 self.addEventListener("install", (e) => {
   console.log(`Version ${VERSION} installed`);
   e.waitUntil(init());
@@ -96,22 +105,6 @@ function toggleTodo(todo) {
     ...todo,
     completed: !todo.completed,
   };
-}
-
-async function respondWithSpliced() {
-  const res = await caches.match("/");
-  const clonedRes = res.clone();
-  const originalBody = await clonedRes.text();
-
-  const allEntries= await db.entries();
-  const data = allEntries.map(([, todoItem]) => todoItem);
-  const newBody = spliceResponseWithData(originalBody, data);
-
-  return new Response(newBody, {
-    status: res.status,
-    statusText: res.statusText,
-    headers: res.headers,
-  });
 }
 
 async function redirect(path, isHtmx = false) {
@@ -212,10 +205,83 @@ function spliceResponseWithData(cachedContent, data) {
   `;
 }
 
+/**
+  * @typedef { "done" | "all" | "active" } AppFilterState
+  */
+
+/**
+  * @param { AppFilterState } filter
+  * @returns { string }
+  */
+async function generatefilteredTodos(filter) {
+  const allEntries= await db.entries();
+  const data = allEntries
+    .map(([, todoItem]) => todoItem)
+    .filter(({ completed }) => {
+      if (filter === "done") {
+        return completed;
+      } else if (filter === "active") {
+        return !completed;
+      } else {
+        return true;
+      }
+    })
+  ;
+
+  return generateTodos(data);
+}
+
+/**
+  * @param { AppFilterState } filter
+  */
+async function respondWithSpliced(filter) {
+  const res = await caches.match("/");
+  const clonedRes = res.clone();
+  const originalBody = await clonedRes.text();
+
+  const allEntries= await db.entries();
+  const data = allEntries
+    .map(([, todoItem]) => todoItem)
+    .filter(({ completed }) => {
+      if (filter === "done") {
+        return completed;
+      } else if (filter === "active") {
+        return !completed;
+      } else {
+        return true;
+      }
+    })
+  ;
+  const newBody = spliceResponseWithData(originalBody, data);
+
+  return new Response(newBody, {
+    status: res.status,
+    statusText: res.statusText,
+    headers: res.headers,
+  });
+}
+
 app.get("/", async () => {
   const filter = await getFilterState();
-  console.log("DEBUG filter:", filter);
-  return respondWithSpliced();
+  // TODO Set the filter visual state
+  return respondWithSpliced(filter);
+});
+
+app.post("/set-filter", async (req, e) => {
+  const text = await req.text();
+  const [params, _] = new URLSearchParams(text);
+  console.assert(params[0] === "task-filter");
+  console.assert(params.length === 2);
+
+  const rawFilter = params[1];
+  await setFilterState(rawFilter);
+  const filter = await getFilterState();
+  const body = await generatefilteredTodos(filter);
+
+  return new Response(body, {
+    status: 200,
+    statusText: "OK",
+  });
 });
 
 app.post("/create", (req, e) => {
