@@ -445,7 +445,11 @@
 
       &:checked {
         --_shadow-size: calc(var(--_size) * 0.02);
-        background-color: var(--_clr-checkbox);
+        background-image: linear-gradient(
+          135deg,
+          var(--_clr-checkbox) 50%,
+          oklch(from var(--_clr-checkbox) calc(0.9 * l) c h) 0
+        );
         box-shadow: 
           inset calc(var(--_shadow-size) * -1) calc(var(--_shadow-size) * -1) var(--clr-shadow),
           inset var(--_shadow-size) var(--_shadow-size) var(--clr-shadow);
