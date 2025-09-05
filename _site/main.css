@@ -594,6 +594,10 @@
 }
 
 @layer utilities {
+  .max-width {
+    max-width: 60ch;
+  }
+
   /* TODO Clean this naming up */
   .shadow {
     --_thickness: 0.25rem;
