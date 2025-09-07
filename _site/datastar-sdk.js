@@ -52,6 +52,18 @@ const EventTypes = [
     "datastar-patch-signals",
 ];
 
+const DefaultMapping = {
+  [DatastarDatalinePatchMode]: DefaultElementPatchMode,
+  [DatastarDatalineUseViewTransition]: DefaultElementsUseViewTransitions,
+  [DatastarDatalineOnlyIfMissing]: DefaultPatchSignalsOnlyIfMissing,
+};
+
+const sseHeaders = {
+  "Cache-Control": "no-cache",
+  "Connection": "keep-alive",
+  "Content-Type": "text/event-stream",
+};
+
 /**
  * @param { unknown } obj
  * @return { obj is Record<string, Jsonifiable> }
@@ -67,10 +79,16 @@ function isRecord(obj) {
  *
  * Cannot be instantiated directly, you must use the stream static method.
  */
-class ServerSentEventGenerator {
-  controller: ReadableStreamDefaultController;
+export class ServerSentEventGenerator {
+  /**
+   * @type { ReadableStreamDefaultController }
+   */
+  controller;
 
-  constructor(controller: ReadableStreamDefaultController) {
+  /**
+   * @param { ReadableStreamDefaultController } controller
+   */
+  constructor(controller) {
     this.controller = controller;
   }
 
@@ -229,7 +247,7 @@ class ServerSentEventGenerator {
         const url = new URL(request.url);
         const params = url.searchParams;
         if (params.has("datastar")) {
-          const signals = JSON.parse(params.get("datastar")!);
+          const signals = JSON.parse(params.get("datastar"));
 
           if (isRecord(signals)) {
             return { success: true, signals };
@@ -264,21 +282,6 @@ class ServerSentEventGenerator {
   }
 
   /**
-   * @param { Record<string, Jsonifiable> } options
-   * @returns { string[] }
-   */
-  #eachOptionIsADataLine(options) {
-    return Object.keys(options).filter((key) => {
-      return !this.#hasDefaultValue(key, options[key]);
-    }).flatMap((key) => {
-      return this.#eachNewlineIsADataLine(
-        key,
-        options[key]!.toString(),
-      );
-    });
-  }
-
-  /**
    * @param { string } key
    * @param { unknown } val
    * @returns { boolean }
@@ -289,6 +292,21 @@ class ServerSentEventGenerator {
     }
 
     return false;
+  }
+
+  /**
+   * @param { Record<string, Jsonifiable> } options
+   * @returns { string[] }
+   */
+  #eachOptionIsADataLine(options) {
+    return Object.keys(options).filter((key) => {
+      return !this.#hasDefaultValue(key, options[key]);
+    }).flatMap((key) => {
+      return this.#eachNewlineIsADataLine(
+        key,
+        options[key].toString(),
+      );
+    });
   }
 
   /**
@@ -350,9 +368,9 @@ class ServerSentEventGenerator {
     }
 
     // Build data lines - skip elements data line if empty in remove mode with selector
-    const dataLines = this.eachOptionIsADataLine(renderOptions);
+    const dataLines = this.#eachOptionIsADataLine(renderOptions);
     if (!isRemoveWithSelector || elements.trim() !== '') {
-      dataLines.push(...this.eachNewlineIsADataLine(DatastarDatalineElements, elements));
+      dataLines.push(...this.#eachNewlineIsADataLine(DatastarDatalineElements, elements));
     }
 
     return this.send("datastar-patch-elements", dataLines, {
@@ -527,7 +545,6 @@ class ServerSentEventGenerator {
   }
 }
 
-
 // types.ts
 // import {
 //   DatastarDatalineElements,
@@ -588,12 +605,6 @@ class ServerSentEventGenerator {
 //   [DatastarDatalineSignals]: Record<string, Jsonifiable>;
 // }
 
-// const sseHeaders = {
-//   "Cache-Control": "no-cache",
-//   "Connection": "keep-alive",
-//   "Content-Type": "text/event-stream",
-// } as const;
-
 // type MultilineDatalinePrefix =
 //   | typeof DatastarDatalineElements
 //   | typeof DatastarDatalineSignals;
@@ -607,10 +618,3 @@ class ServerSentEventGenerator {
 // type DatastarEvent =
 //   | patchElementsEvent
 //   | patchSignalsEvent;
-
-// const DefaultMapping = {
-//   [DatastarDatalinePatchMode]: DefaultElementPatchMode,
-//   [DatastarDatalineUseViewTransition]: DefaultElementsUseViewTransitions,
-//   [DatastarDatalineOnlyIfMissing]: DefaultPatchSignalsOnlyIfMissing,
-// } as const;
-
