@@ -1,8 +1,9 @@
+import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
 import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
 
-const VERSION = "0.0.1";
+const VERSION = "0.0.2";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
 const DYNAMIC_CACHE_NAME = `dynamic-cache`;
@@ -26,7 +27,7 @@ const assets = [
   "/new.html",
   "/new",
   "/main.js",
-  "/htmx.min.js",
+  "/datastar.js",
   "/app.webmanifest",
   "/main.css",
   "/autofocus-input.js",
