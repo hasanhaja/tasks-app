@@ -113,12 +113,13 @@ async function redirect(path, isHtmx = false) {
     : Response.redirect(path, 303);
 }
 
-function list(id, title, completed) {
+function List(id, title, completed) {
   return `
     <li id="task-${id}">
       <label>
         <input 
           type="checkbox" 
+          name="complete-toggle-${id}"
           hx-patch="/complete?id=${id}"
           hx-trigger="change"
           hx-target="#task-${id}"
@@ -174,18 +175,18 @@ function list(id, title, completed) {
   * @param {TodoItem[]} data
   * @returns {string}
   */
-function generateTodos(data) {
+function TodoList(data) {
   return `
     <ul slot="task-list" class="task-list">
       ${data
-          .map(({ id, title, completed }) => list(id, title, completed))
+          .map(({ id, title, completed }) => List(id, title, completed))
           .join("")
       }
     </ul>
   `;
 }
 
-function generateFilterControls(filter) {
+function FilterControls(filter) {
   return `
     <form
       class="task-controls"
@@ -213,7 +214,109 @@ function generateFilterControls(filter) {
   `;
 }
 
+function IndexPage() {
+  return `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Tasks</title>
+    <link href="main.css" rel="stylesheet">
+    <!-- TODO design favicon -->
+    <!-- <link rel="icon" href="favicon.ico" /> -->
+
+    <script type="module" src="main.js"></script>
+    <script type="module" src="htmx-confirmation-handler.js"></script>
+    <!-- <link rel="manifest" href="app.webmanifest"> -->
+    <script src="htmx.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1 class="sr-only">Tasks App Home</h1>
+      <nav class="floating-menu max-width">
+        <ul>
+          <li>
+            <a class="btn" href="/settings">
+              <span class="sr-only">Settings</span>
+              <!-- TODO Placeholder until I sort out font awesome icons -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a class="btn" href="/new">
+              <span class="sr-only">New task</span>
+              <!-- TODO Placeholder until I sort out font awesome icons -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <htmx-confirmation-handler confirmation-dialog="task-delete-confirmation">
+        <section>
+          <h2 class="title">Tasks</h2>
+          <div class="controls-panel">
+            <form
+              class="task-controls"
+              data-variant="filter"
+              hx-trigger="change"
+              hx-post="/set-filter"
+              hx-target="[slot='task-list']"
+              hx-swap="outerHTML"
+            >
+              <fieldset>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="all" checked>
+                  <span>All</span>
+                </label>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="done">
+                  <span>Done</span>
+                </label>
+                <label class="btn">
+                  <input type="radio" name="task-filter" value="active">
+                  <span>Active</span>
+                </label>
+              </fieldset>
+            </form>
+          </div>
+          <div>
+            <task-list>
+              <template shadowrootmode="open">
+                <slot name="task-list">All done!</slot>
+              </template>
+            </task-list>
+          </div>
+        </section>
+      </htmx-confirmation-handler>
+      <!-- Task Delete Confirmation Dialog -->
+      <dialog id="task-delete-confirmation">
+        <form method="dialog">
+          <button class="btn" type="button" data-variant="close-dialog">
+            <span class="sr-only">Close dialog</span>
+            <!-- TODO Replace with font awesome icon -->
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+            </span>
+          </button>
+          <p>Are you sure you want to delete this task?</p>
+          <div>
+            <button class="btn" type="button" data-variant="delete">Delete</button>
+            <button class="btn" type="submit" data-variant="neutral" autofocus>Cancel</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+  </body>
+</html>
+  `;
+}
+
 /**
+  * TODO Replace with SSR'd page
   * @param {string} cachedContent 
   * @param {TodoItem[]} data
   * @param { AppFilterState } filter
@@ -227,15 +330,15 @@ function spliceResponseWithData(cachedContent, data, filter) {
   let page = cachedContent;
   // Splice in current form controls to section
   // TODO Clean up variable names or extract to functions
-  const controlPanelStart = `<div class="controls-panel">`;
+  const ControlPanelStart = `<div class="controls-panel">`;
   const formEnd = "</form>";
-  const [h, t] = page.split(controlPanelStart);
+  const [h, t] = page.split(ControlPanelStart);
   const [_, ft] = t.split(formEnd);
 
   page = `
     ${h}
-    ${controlPanelStart}
-    ${generateFilterControls(filter)}
+    ${ControlPanelStart}
+    ${FilterControls(filter)}
     ${ft}
   `;
 
@@ -245,7 +348,7 @@ function spliceResponseWithData(cachedContent, data, filter) {
   page = `
     ${head}
     ${templateClosingTag}
-    ${generateTodos(data)}
+    ${TodoList(data)}
     ${tail}
   `;
 
@@ -260,7 +363,7 @@ function spliceResponseWithData(cachedContent, data, filter) {
   * @param { AppFilterState } filter
   * @returns { string }
   */
-async function generatefilteredTodos(filter) {
+async function FilteredTodoList(filter) {
   const allEntries= await db.entries();
   const data = allEntries
     .map(([, todoItem]) => todoItem)
@@ -275,7 +378,7 @@ async function generatefilteredTodos(filter) {
     })
   ;
 
-  return generateTodos(data);
+  return TodoList(data);
 }
 
 /**
@@ -324,7 +427,7 @@ app.post("/set-filter", async (req, e) => {
   const rawFilter = params[1];
   await setFilterState(rawFilter);
   const filter = await getFilterState();
-  const body = await generatefilteredTodos(filter);
+  const body = await FilteredTodoList(filter);
 
   return new Response(body, {
     status: 200,
@@ -365,7 +468,7 @@ app.delete("/delete", (req, e) => {
 
 });
 
-function editPage(id, title) {
+function EditPage(id, title) {
   return `
 <!DOCTYPE html>
 <html>
@@ -407,7 +510,7 @@ app.get("/edit", async (req, e) => {
   const id = url.searchParams.get("id");
 
   const todo = await db.get(id);
-  const page = editPage(id, todo.title);
+  const page = EditPage(id, todo.title);
 
   return new Response(page, {
     status: 200,
@@ -437,7 +540,7 @@ app.patch("/complete", async (req, e) => {
   e.waitUntil(db.update(id, toggleTodo));
 
   const todo = await db.get(id);
-  const newBody = list(todo.id, todo.title, todo.completed);
+  const newBody = List(todo.id, todo.title, todo.completed);
  
   return new Response(newBody, {
     status: 200,

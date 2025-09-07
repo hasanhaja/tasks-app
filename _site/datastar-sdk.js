@@ -543,15 +543,10 @@ class ServerSentEventGenerator {
 //   ElementPatchModes,
 // } from "./consts.ts";
 
-// // Simple Jsonifiable type definition to replace npm:type-fest dependency
-// type Jsonifiable = 
-//   | string 
-//   | number 
-//   | boolean 
-//   | null 
-//   | undefined
-//   | Jsonifiable[] 
-//   | { [key: string]: Jsonifiable };
+// Simple Jsonifiable type definition to replace npm:type-fest dependency
+/**
+ * @typedef { string | number | boolean | null | undefined | Jsonifiable[] | { [key: string]: Jsonifiable }} Jsonifiable
+ */
 
 // type ElementPatchMode = typeof ElementPatchModes[number];
 // type EventType = typeof EventTypes[number];
