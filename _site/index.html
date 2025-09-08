@@ -38,38 +38,50 @@
 
     <main>
       <htmx-confirmation-handler confirmation-dialog="task-delete-confirmation">
+        <!-- <section> -->
+        <!--   <h2>Datastar</h2> -->
+        <!--   <button data-on-click="@get('/server-message')">Start</button> -->
+        <!--   <output id="server-output">Waiting...</output> -->
+        <!-- </section> -->
         <section>
           <h2 class="title">Tasks</h2>
           <div class="controls-panel">
-            <form
-              class="task-controls"
-              data-variant="filter"
-              hx-trigger="change"
-              hx-post="/set-filter"
-              hx-target="[slot='task-list']"
-              hx-swap="outerHTML"
-            >
+            <form class="task-controls" data-variant="filter">
               <fieldset>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="all" checked>
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="all"
+                    checked
+                    data-on-change="@post('/set-filter?filter=all')"
+                  >
                   <span>All</span>
                 </label>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="done">
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="done"
+                    data-on-change="@post('/set-filter?filter=done')"
+                  >
                   <span>Done</span>
                 </label>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="active">
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="active"
+                    data-on-change="@post('/set-filter?filter=active')"
+                  >
                   <span>Active</span>
                 </label>
               </fieldset>
             </form>
           </div>
           <div>
-            <task-list>
-              <template shadowrootmode="open">
-                <slot name="task-list">All done!</slot>
-              </template>
+            <task-list id="task-list">
+              <span>All done!</span>
             </task-list>
           </div>
         </section>
