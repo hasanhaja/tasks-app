@@ -184,9 +184,9 @@ function List(id, title, completed) {
               </button>
             </li>
             <li>
-              <button class="btn" data-variant="edit-task" href="/edit?id=${id}">
+              <a class="btn" data-variant="edit-task" href="/edit?id=${id}">
                 Edit
-              </button>
+              </a>
             </li>
           </ul>
         </div>
