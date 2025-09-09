@@ -172,12 +172,8 @@ function List(id, title, completed) {
               <button
                 class="btn"
                 data-variant="delete-task"
-                data-on-click="@delete('/delete?id=${id}')"        
-
-                hx-delete="/delete?id=${id}"
-                hx-confirm="Are you sure you wish to delete this task?"
-                hx-swap="delete"
-                hx-target="#task-${id}"
+                data-on-action-confirmed="@delete('/delete?id=${id}')"
+                data-on-click="event.target.dispatchEvent(new Event('action-attempted', { bubbles: true }))"
               >
                 Delete
               </button>

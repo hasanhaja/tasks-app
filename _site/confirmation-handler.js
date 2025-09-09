@@ -30,18 +30,12 @@ class ConfirmationHandler extends HTMLElement {
       this.#dialog.close();
     }, { signal: this.#controller.signal });
 
-    form.addEventListener("submit", (e) => console.log("Dialog form submitted"));
-
-    this.addEventListener("htmx:confirm", (confirmEvent) => {
-      if (!confirmEvent.detail.elt.hasAttribute("hx-confirm")) return;
-      confirmEvent.preventDefault();
-
+    this.addEventListener("action-attempted", (attemptedEvent) => {
       this.#dialog.showModal();
       const dialogDeleteBtn = this.#dialog.querySelector("[data-variant='delete']");
 
       dialogDeleteBtn.addEventListener("click", () => {
-        // If the user confirms, we manually issue the request
-        confirmEvent.detail.issueRequest(true); // true to skip the built-in window.confirm()
+        attemptedEvent.target.dispatchEvent(new Event("action-confirmed"));
         this.#dialog.close();
       }, { once: true });
     }, { signal: this.#controller.signal });
