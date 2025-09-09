@@ -520,6 +520,7 @@ app.patch("/complete", async (req, e) => {
 
   const todo = await db.get(id);
  
+  // TODO add removal of List item based on filter state
   return ServerSentEventGenerator.stream((stream) => {
     stream.patchElements(List(todo.id, todo.title, todo.completed));
   });
