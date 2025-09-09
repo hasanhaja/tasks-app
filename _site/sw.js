@@ -520,24 +520,12 @@ app.patch("/complete", async (req, e) => {
 
   const todo = await db.get(id);
  
-  // TODO add removal of List item based on filter state
-  return ServerSentEventGenerator.stream((stream) => {
+  return ServerSentEventGenerator.stream(async (stream) => {
     stream.patchElements(List(todo.id, todo.title, todo.completed));
+    const filter = await getFilterState();
+    stream.patchElements(await FilteredTodoList(filter));
   });
 });
-
-// app.get("/server-message", (req, e) => {
-//   return ServerSentEventGenerator.stream(async (stream) => {
-//     const Output = (message) => `<output id="server-output">${message}</output>`;
-//     stream.patchElements(Output("Starting..."));
-//     for (let i = 10; i >= 0; i--) {
-//       await new Promise((res) => setTimeout(res, 150));
-//       stream.patchElements(Output(`Next message will be in ${i} seconds`))
-//       await new Promise((res) => setTimeout(res, i * 1000));
-//     }
-//     stream.patchElements(Output("Finished."));
-//   });
-// });
 
 const cacheConfig = [
   { cacheName: STATIC_CACHE_NAME, strategy: "cache-first", assets },
