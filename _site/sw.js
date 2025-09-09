@@ -197,10 +197,16 @@ function List(id, title, completed) {
 
 /**
   * @param {TodoItem[]} data
-  * @returns {string | undefined}
+  * @returns {string}
   */
 function TodoList(data) {
-  if (data.length < 1) return;
+  if (data.length < 1) {
+    return `
+      <task-list id="task-list">
+        <span>All done!</span>
+      </task-list>
+    `;
+  }
 
   return `
     <task-list id="task-list">
@@ -228,7 +234,7 @@ function FilterControls(filter) {
             name="task-filter"
             value="all"
             ${filter === "all" ? "checked" : ""}
-            data-on-change="@post('/set-filter?filter=all')"
+            data-on-change="@post('/set-filter', { contentType: 'form' })"
           >
           <span>All</span>
         </label>
@@ -238,7 +244,7 @@ function FilterControls(filter) {
             name="task-filter"
             value="done"
             ${filter === "done" ? "checked" : ""}
-            data-on-change="@post('/set-filter?filter=done')"
+            data-on-change="@post('/set-filter', { contentType: 'form' })"
           >
           <span>Done</span>
         </label>
@@ -248,7 +254,7 @@ function FilterControls(filter) {
             name="task-filter"
             value="active"
             ${filter === "active" ? "checked" : ""}
-            data-on-change="@post('/set-filter?filter=active')"
+            data-on-change="@post('/set-filter', { contentType: 'form' })"
           >
           <span>Active</span>
         </label>
@@ -324,11 +330,7 @@ function IndexPage(cachedContent, data, filter) {
           ${FilterControls(filter)}
         </div>
         <div>
-          ${TodoList(data) ?? `
-            <task-list id="task-list">
-              <span>All done!</span>
-            </task-list>
-          `}
+          ${TodoList(data)}
         </div>
       </section>
     </confirmation-handler>

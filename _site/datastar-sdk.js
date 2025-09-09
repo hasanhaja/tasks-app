@@ -122,7 +122,6 @@ export class ServerSentEventGenerator {
           const stream = onStart(generator);
           if (stream instanceof Promise) await stream;
           if (!options?.keepalive) {
-            console.log("DEBUG connection closed");
             controller.close();
           }
         } catch (error) {
