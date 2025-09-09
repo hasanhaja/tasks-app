@@ -108,11 +108,16 @@ function toggleTodo(todo) {
   };
 }
 
-// TODO Review if it's needed with Datastar
-async function redirect(path, isHtmx = false) {
-  return isHtmx 
-    ? new Response(null, { headers: new Headers({ "HX-Redirect": path }) })
-    : Response.redirect(path, 303);
+/**
+ * @param { string } path
+ * @param { boolean } [isSoftRedirect=false]
+ */
+async function redirect(path, isSoftRedirect = false) {
+  return isSoftRedirect
+  ? ServerSentEventGenerator.stream((stream) => {
+    stream.executeScript(`window.location = "${path}"`);
+  })
+  : Response.redirect(path, 303);
 }
 
 function ConfirmationDialog() {
@@ -444,6 +449,7 @@ app.post("/set-filter", async (req, e) => {
   const filter = await getFilterState();
   const body = await FilteredTodoList(filter);
 
+  // TODO Rework to patch in new list
   return new Response(body, {
     status: 200,
     statusText: "OK",
@@ -463,11 +469,13 @@ app.post("/create", (req, e) => {
   return redirect("/");
 });
 
+// TODO Can't remember why I have this? Was this for progressive enhancement in case HTMX failed to kick in?
 app.get("/delete", (req, e) => {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   e.waitUntil(db.del(id));
   
+  // TODO rework for datastar... patch new list in
   return redirect("/");
 });
 
@@ -476,6 +484,7 @@ app.delete("/delete", (req, e) => {
   const id = url.searchParams.get("id");
   e.waitUntil(db.del(id));
 
+  // TODO rework for datastar... patch new list in and let morph deal with it on remove element
   return new Response(null, {
     status: 200,
     statusText: "OK",
@@ -534,7 +543,6 @@ app.get("/edit", async (req, e) => {
   });
 });
 
-// TODO Rework for datastar
 app.patch("/edit", async (req, e) => {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
@@ -546,7 +554,7 @@ app.patch("/edit", async (req, e) => {
     .then(([, value]) => escapeHtml(value))
     .then((value) => db.update(id, (todo) => ({...todo, title: value})))
   );
- 
+
   return redirect("/", true);
 });
 
