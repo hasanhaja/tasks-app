@@ -378,37 +378,6 @@ async function FilteredTodoList(filter) {
   return TodoList(data);
 }
 
-/**
-  * @param { AppFilterState } filter
-  */
-async function respondWithSpliced(filter) {
-  const res = await caches.match("/");
-  const clonedRes = res.clone();
-  const originalBody = await clonedRes.text();
-
-  const allEntries= await db.entries();
-  const data = allEntries
-    .map(([, todoItem]) => todoItem)
-    .filter(({ completed }) => {
-      if (filter === "done") {
-        return completed;
-      } else if (filter === "active") {
-        return !completed;
-      } else {
-        return true;
-      }
-    })
-  ;
-  // TODO Filter is being used in multiple places. Simplify!
-  const newBody = IndexPage(originalBody, data, filter);
-
-  return new Response(newBody, {
-    status: res.status,
-    statusText: res.statusText,
-    headers: res.headers,
-  });
-}
-
 app.get("/", async () => {
   const filter = await getFilterState();
 
