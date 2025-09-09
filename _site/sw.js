@@ -31,7 +31,7 @@ const assets = [
   "/app.webmanifest",
   "/main.css",
   "/autofocus-input.js",
-  "/htmx-confirmation-handler.js",
+  "/confirmation-handler.js",
 ];
 
 async function init() {

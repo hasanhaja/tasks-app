@@ -9,7 +9,7 @@
     <!-- <link rel="icon" href="favicon.ico" /> -->
 
     <script type="module" src="main.js"></script>
-    <script type="module" src="htmx-confirmation-handler.js"></script>
+    <script type="module" src="confirmation-handler.js"></script>
     <!-- <link rel="manifest" href="app.webmanifest"> -->
     <script type="module" src="datastar.js"></script>
   </head>
@@ -37,7 +37,7 @@
     </header>
 
     <main>
-      <htmx-confirmation-handler confirmation-dialog="task-delete-confirmation">
+      <confirmation-handler confirmation-dialog="task-delete-confirmation">
         <!-- <section> -->
         <!--   <h2>Datastar</h2> -->
         <!--   <button data-on-click="@get('/server-message')">Start</button> -->
@@ -85,7 +85,7 @@
             </task-list>
           </div>
         </section>
-      </htmx-confirmation-handler>
+      </confirmation-handler>
       <!-- Task Delete Confirmation Dialog -->
       <dialog id="task-delete-confirmation">
         <form method="dialog">

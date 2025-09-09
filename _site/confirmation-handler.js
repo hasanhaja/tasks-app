@@ -1,9 +1,9 @@
-class HtmxConfirmationHandler extends HTMLElement {
-  static tagName = "htmx-confirmation-handler";
+class ConfirmationHandler extends HTMLElement {
+  static tagName = "confirmation-handler";
   static attrs = {
     confirmationDialog: "confirmation-dialog",
   };
-  static observedAttributes = Object.values(HtmxConfirmationHandler.attrs);
+  static observedAttributes = Object.values(ConfirmationHandler.attrs);
 
   #controller;
   #dialog;
@@ -18,7 +18,7 @@ class HtmxConfirmationHandler extends HTMLElement {
     * @returns { string }
     */
   get confirmationDialog() {
-    return this.getAttribute(HtmxConfirmationHandler.attrs.confirmationDialog);
+    return this.getAttribute(ConfirmationHandler.attrs.confirmationDialog);
   }
 
   connectedCallback() {
@@ -52,4 +52,4 @@ class HtmxConfirmationHandler extends HTMLElement {
   }
 }
 
-customElements.define(HtmxConfirmationHandler.tagName, HtmxConfirmationHandler);
+customElements.define(ConfirmationHandler.tagName, ConfirmationHandler);
