@@ -447,12 +447,9 @@ app.post("/set-filter", async (req, e) => {
   const rawFilter = params[1];
   await setFilterState(rawFilter);
   const filter = await getFilterState();
-  const body = await FilteredTodoList(filter);
 
-  // TODO Rework to patch in new list
-  return new Response(body, {
-    status: 200,
-    statusText: "OK",
+  return ServerSentEventGenerator.stream(async (stream) => {
+    stream.patchElements(await FilteredTodoList(filter));
   });
 });
 
@@ -469,27 +466,14 @@ app.post("/create", (req, e) => {
   return redirect("/");
 });
 
-// TODO Can't remember why I have this? Was this for progressive enhancement in case HTMX failed to kick in?
-app.get("/delete", (req, e) => {
-  const url = new URL(req.url);
-  const id = url.searchParams.get("id");
-  e.waitUntil(db.del(id));
-  
-  // TODO rework for datastar... patch new list in
-  return redirect("/");
-});
-
 app.delete("/delete", (req, e) => {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   e.waitUntil(db.del(id));
 
-  // TODO rework for datastar... patch new list in and let morph deal with it on remove element
-  return new Response(null, {
-    status: 200,
-    statusText: "OK",
+  return ServerSentEventGenerator.stream((stream) => {
+    stream.patchElements('', { selector: `#task-${id}`, mode: 'remove' });
   });
-
 });
 
 function EditPage(id, title) {
@@ -564,11 +548,9 @@ app.patch("/complete", async (req, e) => {
   e.waitUntil(db.update(id, toggleTodo));
 
   const todo = await db.get(id);
-  const newBody = List(todo.id, todo.title, todo.completed);
  
-  return new Response(newBody, {
-    status: 200,
-    statusText: "OK",
+  return ServerSentEventGenerator.stream((stream) => {
+    stream.patchElements(List(todo.id, todo.title, todo.completed));
   });
 });
 
