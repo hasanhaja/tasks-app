@@ -49,7 +49,7 @@
                     name="task-filter"
                     value="all"
                     checked
-                    data-on-change="@post('/set-filter?filter=all')"
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
                   >
                   <span>All</span>
                 </label>
@@ -58,7 +58,7 @@
                     type="radio"
                     name="task-filter"
                     value="done"
-                    data-on-change="@post('/set-filter?filter=done')"
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
                   >
                   <span>Done</span>
                 </label>
@@ -67,7 +67,7 @@
                     type="radio"
                     name="task-filter"
                     value="active"
-                    data-on-change="@post('/set-filter?filter=active')"
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
                   >
                   <span>Active</span>
                 </label>

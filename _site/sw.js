@@ -120,9 +120,13 @@ async function redirect(path, isSoftRedirect = false) {
   : Response.redirect(path, 303);
 }
 
-function ConfirmationDialog() {
+/**
+ * @param { { id: string; } } props
+ */
+function ConfirmationDialog({ id }) {
   return `
-    <dialog id="task-delete-confirmation">
+    <!-- Task Delete Confirmation Dialog -->
+    <dialog id="${id}">
       <form method="dialog">
         <button class="btn" type="button" data-variant="close-dialog">
           <span class="sr-only">Close dialog</span>
@@ -334,23 +338,7 @@ function IndexPage(cachedContent, data, filter) {
         </div>
       </section>
     </confirmation-handler>
-    <!-- Task Delete Confirmation Dialog -->
-    <dialog id="task-delete-confirmation">
-      <form method="dialog">
-        <button class="btn" type="button" data-variant="close-dialog">
-          <span class="sr-only">Close dialog</span>
-          <!-- TODO Replace with font awesome icon -->
-          <span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-          </span>
-        </button>
-        <p>Are you sure you want to delete this task?</p>
-        <div>
-          <button class="btn" type="button" data-variant="delete">Delete</button>
-          <button class="btn" type="submit" data-variant="neutral" autofocus>Cancel</button>
-        </div>
-      </form>
-    </dialog>
+    ${ConfirmationDialog({ id: "task-delete-confirmation" })}
   `);
 }
 
@@ -443,7 +431,7 @@ app.delete("/delete", (req, e) => {
   e.waitUntil(db.del(id));
 
   return ServerSentEventGenerator.stream((stream) => {
-    stream.patchElements('', { selector: `#task-${id}`, mode: 'remove' });
+    stream.patchElements("", { selector: `#task-${id}`, mode: "remove" });
   });
 });
 

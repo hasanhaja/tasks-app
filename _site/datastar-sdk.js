@@ -72,7 +72,6 @@ function isRecord(obj) {
   return typeof obj === "object" && obj !== null;
 }
 
-
 /**
  * ServerSentEventGenerator class, responsible for initializing and handling
  * server-sent events (SSE) as well as reading signals sent by the client.
@@ -172,7 +171,7 @@ export class ServerSentEventGenerator {
    */
   #validateElementPatchMode(mode) {
     if (!ElementPatchModes.includes(mode)) {
-      throw new Error(`Invalid ElementPatchMode: "${mode}". Valid modes are: ${ElementPatchModes.join(', ')}`);
+      throw new Error(`Invalid ElementPatchMode: "${mode}". Valid modes are: ${ElementPatchModes.join(", ")}`);
     }
   }
 
@@ -185,7 +184,7 @@ export class ServerSentEventGenerator {
    * @returns { asserts value is string }
    */
   #validateRequired(value, paramName) {
-    if (!value || value.trim() === '') {
+    if (!value || value.trim() === "") {
       throw new Error(`${paramName} is required and cannot be empty`);
     }
   }
@@ -225,7 +224,7 @@ export class ServerSentEventGenerator {
     );
 
     // Join all lines and encode as a single chunk to avoid extra newlines
-    const eventText = eventLines.join('');
+    const eventText = eventLines.join("");
     this.controller?.enqueue(new TextEncoder().encode(eventText));
 
     return eventLines;
@@ -350,26 +349,26 @@ export class ServerSentEventGenerator {
      * @type { string }
      */
     const selector = renderOptions[DatastarDatalineSelector];
-    const isRemoveWithSelector = patchMode === 'remove' && selector;
+    const isRemoveWithSelector = patchMode === "remove" && selector;
 
     // Validate required parameters - elements only required when not removing with selector
     if (!isRemoveWithSelector) {
-      this.#validateRequired(elements, 'elements');
+      this.#validateRequired(elements, "elements");
     }
 
     // Per spec: If no selector specified, elements must have IDs (this validation would be complex
     // and is better handled client-side, but we ensure elements is not empty)
-    if (!selector && patchMode === 'remove') {
+    if (!selector && patchMode === "remove") {
       // For remove mode, elements parameter may be omitted when selector is supplied
       // but since we have no selector, we need elements with IDs
-      if (!elements || elements.trim() === '') {
-        throw new Error('For remove mode without selector, elements parameter with IDs is required');
+      if (!elements || elements.trim() === "") {
+        throw new Error("For remove mode without selector, elements parameter with IDs is required");
       }
     }
 
     // Build data lines - skip elements data line if empty in remove mode with selector
     const dataLines = this.#eachOptionIsADataLine(renderOptions);
-    if (!isRemoveWithSelector || elements.trim() !== '') {
+    if (!isRemoveWithSelector || elements.trim() !== "") {
       dataLines.push(...this.#eachNewlineIsADataLine(DatastarDatalineElements, elements));
     }
 
@@ -399,7 +398,7 @@ export class ServerSentEventGenerator {
    */
   patchSignals(signals, options) {
     // Validate required parameters
-    this.#validateRequired(signals, 'signals');
+    this.#validateRequired(signals, "signals");
 
     const { eventId, retryDuration, ...eventOptions } = options || {};
 
@@ -459,7 +458,7 @@ export class ServerSentEventGenerator {
 
     // Only add data-effect if autoRemove is true
     if (autoRemove) {
-      attrString += ' data-effect="el.remove()"';
+      attrString += " data-effect='el.remove()'";
     }
 
     const scriptTag = `<script${attrString}>${script}</script>`;
@@ -501,12 +500,12 @@ export class ServerSentEventGenerator {
    */
   removeElements(selector, elements, options) {
     // If selector is not provided, elements must be present and non-empty
-    if (!selector && (!elements || elements.trim() === '')) {
-      throw new Error('Either selector or elements (with IDs) must be provided to remove elements.');
+    if (!selector && (!elements || elements.trim() === "")) {
+      throw new Error("Either selector or elements (with IDs) must be provided to remove elements.");
     }
-    return this.patchElements(elements ?? '', {
+    return this.patchElements(elements ?? "", {
       selector,
-      mode: 'remove',
+      mode: "remove",
       eventId: options?.eventId,
       retryDuration: options?.retryDuration,
     });
