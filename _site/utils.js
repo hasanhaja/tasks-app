@@ -50,11 +50,14 @@ export async function cacheStatic(cacheName, assets) {
   console.log(`${cacheName} has been updated`);
 }
 
-export async function cleanCache(cacheName) {
+/**
+ * @param { ...string } cacheNames
+ */
+export async function cleanCaches(...cacheNames) {
   const keys = await caches.keys();
   return Promise.all(
     keys
-      .filter((key) => key !== cacheName)
+      .filter((key) => !cacheNames.includes(key))
       .map((key) => caches.delete(key))
   );
 }

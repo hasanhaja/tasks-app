@@ -1,7 +1,7 @@
 import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
-import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
+import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
 const VERSION = "0.0.2";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
@@ -34,8 +34,124 @@ const assets = [
   "/confirmation-handler.js",
 ];
 
+const imgAssets = [
+  "/assets/windows11/SmallTile.scale-100.png",
+  "/assets/windows11/SmallTile.scale-125.png",
+  "/assets/windows11/SmallTile.scale-150.png",
+  "/assets/windows11/SmallTile.scale-200.png",
+  "/assets/windows11/SmallTile.scale-400.png",
+  "/assets/windows11/Square150x150Logo.scale-100.png",
+  "/assets/windows11/Square150x150Logo.scale-125.png",
+  "/assets/windows11/Square150x150Logo.scale-150.png",
+  "/assets/windows11/Square150x150Logo.scale-200.png",
+  "/assets/windows11/Square150x150Logo.scale-400.png",
+  "/assets/windows11/Wide310x150Logo.scale-100.png",
+  "/assets/windows11/Wide310x150Logo.scale-125.png",
+  "/assets/windows11/Wide310x150Logo.scale-150.png",
+  "/assets/windows11/Wide310x150Logo.scale-200.png",
+  "/assets/windows11/Wide310x150Logo.scale-400.png",
+  "/assets/windows11/LargeTile.scale-100.png",
+  "/assets/windows11/LargeTile.scale-125.png",
+  "/assets/windows11/LargeTile.scale-150.png",
+  "/assets/windows11/LargeTile.scale-200.png",
+  "/assets/windows11/LargeTile.scale-400.png",
+  "/assets/windows11/Square44x44Logo.scale-100.png",
+  "/assets/windows11/Square44x44Logo.scale-125.png",
+  "/assets/windows11/Square44x44Logo.scale-150.png",
+  "/assets/windows11/Square44x44Logo.scale-200.png",
+  "/assets/windows11/Square44x44Logo.scale-400.png",
+  "/assets/windows11/StoreLogo.scale-100.png",
+  "/assets/windows11/StoreLogo.scale-125.png",
+  "/assets/windows11/StoreLogo.scale-150.png",
+  "/assets/windows11/StoreLogo.scale-200.png",
+  "/assets/windows11/StoreLogo.scale-400.png",
+  "/assets/windows11/SplashScreen.scale-100.png",
+  "/assets/windows11/SplashScreen.scale-125.png",
+  "/assets/windows11/SplashScreen.scale-150.png",
+  "/assets/windows11/SplashScreen.scale-200.png",
+  "/assets/windows11/SplashScreen.scale-400.png",
+  "/assets/windows11/Square44x44Logo.targetsize-16.png",
+  "/assets/windows11/Square44x44Logo.targetsize-20.png",
+  "/assets/windows11/Square44x44Logo.targetsize-24.png",
+  "/assets/windows11/Square44x44Logo.targetsize-30.png",
+  "/assets/windows11/Square44x44Logo.targetsize-32.png",
+  "/assets/windows11/Square44x44Logo.targetsize-36.png",
+  "/assets/windows11/Square44x44Logo.targetsize-40.png",
+  "/assets/windows11/Square44x44Logo.targetsize-44.png",
+  "/assets/windows11/Square44x44Logo.targetsize-48.png",
+  "/assets/windows11/Square44x44Logo.targetsize-60.png",
+  "/assets/windows11/Square44x44Logo.targetsize-64.png",
+  "/assets/windows11/Square44x44Logo.targetsize-72.png",
+  "/assets/windows11/Square44x44Logo.targetsize-80.png",
+  "/assets/windows11/Square44x44Logo.targetsize-96.png",
+  "/assets/windows11/Square44x44Logo.targetsize-256.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-16.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-20.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-24.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-30.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-32.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-36.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-40.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-44.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-48.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-60.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-64.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-72.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-80.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-96.png",
+  "/assets/windows11/Square44x44Logo.altform-unplated_targetsize-256.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-16.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-20.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-24.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-30.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-32.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-36.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-40.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-44.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-48.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-60.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-64.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-72.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-80.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-96.png",
+  "/assets/windows11/Square44x44Logo.altform-lightunplated_targetsize-256.png",
+  "/assets/android/android-launchericon-512-512.png",
+  "/assets/android/android-launchericon-192-192.png",
+  "/assets/android/android-launchericon-144-144.png",
+  "/assets/android/android-launchericon-96-96.png",
+  "/assets/android/android-launchericon-72-72.png",
+  "/assets/android/android-launchericon-48-48.png",
+  "/assets/ios/16.png",
+  "/assets/ios/20.png",
+  "/assets/ios/29.png",
+  "/assets/ios/32.png",
+  "/assets/ios/40.png",
+  "/assets/ios/50.png",
+  "/assets/ios/57.png",
+  "/assets/ios/58.png",
+  "/assets/ios/60.png",
+  "/assets/ios/64.png",
+  "/assets/ios/72.png",
+  "/assets/ios/76.png",
+  "/assets/ios/80.png",
+  "/assets/ios/87.png",
+  "/assets/ios/100.png",
+  "/assets/ios/114.png",
+  "/assets/ios/120.png",
+  "/assets/ios/128.png",
+  "/assets/ios/144.png",
+  "/assets/ios/152.png",
+  "/assets/ios/167.png",
+  "/assets/ios/180.png",
+  "/assets/ios/192.png",
+  "/assets/ios/256.png",
+  "/assets/ios/512.png",
+  "/assets/ios/1024.png",
+];
+
 async function init() {
   await cacheStatic(STATIC_CACHE_NAME, assets);
+  await cacheStatic(IMAGE_CACHE_NAME, imgAssets);
 }
 
 /**
@@ -66,12 +182,17 @@ self.addEventListener("install", (e) => {
   self.skipWaiting();
 });
 
+async function cleanupAndClaim() {
+  await cleanCaches(
+    STATIC_CACHE_NAME,
+    IMAGE_CACHE_NAME,
+  );
+  await self.clients.claim();
+}
+
 self.addEventListener("activate", (e) => {
   console.log(`Version ${VERSION} activated`);
-  e.waitUntil(async () => {
-    await cleanCache(STATIC_CACHE_NAME);
-    await self.clients.claim(); 
-  });
+  e.waitUntil(cleanupAndClaim());
 });
 
 /**
@@ -275,12 +396,12 @@ function RootLayout(children) {
     <meta name="viewport" content="width=device-width">
     <title>Tasks</title>
     <link href="main.css" rel="stylesheet">
-    <!-- TODO design favicon -->
-    <!-- <link rel="icon" href="favicon.ico" /> -->
+    <!-- TODO placeholder favicon -->
+    <link rel="icon" href="assets/ios/16.png" />
 
     <script type="module" src="main.js"></script>
     <script type="module" src="confirmation-handler.js"></script>
-    <!-- <link rel="manifest" href="app.webmanifest"> -->
+    <link rel="manifest" href="app.webmanifest">
     <script type="module" src="datastar.js"></script>
   </head>
   <body>
@@ -516,6 +637,7 @@ app.patch("/complete", async (req, e) => {
 
 const cacheConfig = [
   { cacheName: STATIC_CACHE_NAME, strategy: "cache-first", assets },
+  { cacheName: IMAGE_CACHE_NAME, strategy: "cache-first", assets: imgAssets },
 ];
 
 app.caches(cacheConfig);
