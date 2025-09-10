@@ -403,7 +403,7 @@
       display: flex;
       justify-content: space-between;
 
-      & > span {
+      & > span, & > s {
         word-break: break-word;
       }
     }
