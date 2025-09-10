@@ -145,7 +145,6 @@ function ConfirmationDialog({ id }) {
   `;
 }
 
-// TODO Rework to use Datastar
 function List(id, title, completed) {
   return `
     <li id="task-${id}">

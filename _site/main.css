@@ -382,7 +382,6 @@
   }
 
   /* Task list START */
-  /* TODO Verify if this is still correct */
   task-list > ul {
     list-style: none;
     display: grid;

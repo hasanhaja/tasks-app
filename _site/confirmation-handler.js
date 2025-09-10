@@ -14,7 +14,6 @@ class ConfirmationHandler extends HTMLElement {
   }
 
   /**
-    * TODO What to do if the attribute isn't passed in?
     * @returns { string }
     */
   get confirmationDialog() {
