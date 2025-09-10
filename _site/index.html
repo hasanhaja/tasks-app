@@ -9,9 +9,9 @@
     <!-- <link rel="icon" href="favicon.ico" /> -->
 
     <script type="module" src="main.js"></script>
-    <script type="module" src="htmx-confirmation-handler.js"></script>
+    <script type="module" src="confirmation-handler.js"></script>
     <!-- <link rel="manifest" href="app.webmanifest"> -->
-    <script src="htmx.min.js"></script>
+    <script type="module" src="datastar.js"></script>
   </head>
   <body>
     <header>
@@ -37,43 +37,50 @@
     </header>
 
     <main>
-      <htmx-confirmation-handler confirmation-dialog="task-delete-confirmation">
+      <confirmation-handler confirmation-dialog="task-delete-confirmation">
         <section>
           <h2 class="title">Tasks</h2>
           <div class="controls-panel">
-            <form
-              class="task-controls"
-              data-variant="filter"
-              hx-trigger="change"
-              hx-post="/set-filter"
-              hx-target="[slot='task-list']"
-              hx-swap="outerHTML"
-            >
+            <form class="task-controls" data-variant="filter">
               <fieldset>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="all" checked>
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="all"
+                    checked
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
+                  >
                   <span>All</span>
                 </label>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="done">
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="done"
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
+                  >
                   <span>Done</span>
                 </label>
                 <label class="btn">
-                  <input type="radio" name="task-filter" value="active">
+                  <input
+                    type="radio"
+                    name="task-filter"
+                    value="active"
+                    data-on-change="@post('/set-filter', { contentType: 'form' })"
+                  >
                   <span>Active</span>
                 </label>
               </fieldset>
             </form>
           </div>
           <div>
-            <task-list>
-              <template shadowrootmode="open">
-                <slot name="task-list">All done!</slot>
-              </template>
+            <task-list id="task-list">
+              <span>All done!</span>
             </task-list>
           </div>
         </section>
-      </htmx-confirmation-handler>
+      </confirmation-handler>
       <!-- Task Delete Confirmation Dialog -->
       <dialog id="task-delete-confirmation">
         <form method="dialog">

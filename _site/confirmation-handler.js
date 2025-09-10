@@ -1,9 +1,9 @@
-class HtmxConfirmationHandler extends HTMLElement {
-  static tagName = "htmx-confirmation-handler";
+class ConfirmationHandler extends HTMLElement {
+  static tagName = "confirmation-handler";
   static attrs = {
     confirmationDialog: "confirmation-dialog",
   };
-  static observedAttributes = Object.values(HtmxConfirmationHandler.attrs);
+  static observedAttributes = Object.values(ConfirmationHandler.attrs);
 
   #controller;
   #dialog;
@@ -18,7 +18,7 @@ class HtmxConfirmationHandler extends HTMLElement {
     * @returns { string }
     */
   get confirmationDialog() {
-    return this.getAttribute(HtmxConfirmationHandler.attrs.confirmationDialog);
+    return this.getAttribute(ConfirmationHandler.attrs.confirmationDialog);
   }
 
   connectedCallback() {
@@ -30,18 +30,12 @@ class HtmxConfirmationHandler extends HTMLElement {
       this.#dialog.close();
     }, { signal: this.#controller.signal });
 
-    form.addEventListener("submit", (e) => console.log("Dialog form submitted"));
-
-    this.addEventListener("htmx:confirm", (confirmEvent) => {
-      if (!confirmEvent.detail.elt.hasAttribute("hx-confirm")) return;
-      confirmEvent.preventDefault();
-
+    this.addEventListener("action-attempted", (attemptedEvent) => {
       this.#dialog.showModal();
       const dialogDeleteBtn = this.#dialog.querySelector("[data-variant='delete']");
 
       dialogDeleteBtn.addEventListener("click", () => {
-        // If the user confirms, we manually issue the request
-        confirmEvent.detail.issueRequest(true); // true to skip the built-in window.confirm()
+        attemptedEvent.target.dispatchEvent(new Event("action-confirmed"));
         this.#dialog.close();
       }, { once: true });
     }, { signal: this.#controller.signal });
@@ -52,4 +46,4 @@ class HtmxConfirmationHandler extends HTMLElement {
   }
 }
 
-customElements.define(HtmxConfirmationHandler.tagName, HtmxConfirmationHandler);
+customElements.define(ConfirmationHandler.tagName, ConfirmationHandler);
