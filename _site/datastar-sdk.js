@@ -1,5 +1,66 @@
 // The SDK was lifted directly from starfederation/datastar-typescript: https://github.com/starfederation/datastar-typescript
 
+// TODO Not sure how to type this with JSDocs
+// type ElementPatchMode = typeof ElementPatchModes[number];
+// type EventType = typeof EventTypes[number];
+
+// TODO Not sure how to type this with JSDocs
+// type StreamOptions = Partial<{
+//   onError: (error: unknown) => Promise<void> | void;
+//   onAbort: (reason?: string) => Promise<void> | void;
+//   responseInit: Record<string, unknown>;
+//   keepalive: boolean;
+// }>
+
+// TODO Not sure how to type this with JSDocs
+// interface DatastarEventOptions {
+//   eventId?: string;
+//   retryDuration?: number;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// interface ElementOptions extends DatastarEventOptions {
+//   [DatastarDatalineUseViewTransition]?: boolean;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// interface PatchElementsOptions extends ElementOptions {
+//   [DatastarDatalinePatchMode]?: ElementPatchMode;
+//   [DatastarDatalineSelector]?: string;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// interface patchElementsEvent {
+//   event: "datastar-patch-elements";
+//   options: PatchElementsOptions;
+//   [DatastarDatalineElements]: string;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// interface PatchSignalsOptions extends DatastarEventOptions {
+//   [DatastarDatalineOnlyIfMissing]?: boolean;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// interface patchSignalsEvent {
+//   event: "datastar-patch-signals";
+//   options: PatchSignalsOptions;
+//   [DatastarDatalineSignals]: Record<string, Jsonifiable>;
+// }
+
+// TODO Not sure how to type this with JSDocs
+// type MultilineDatalinePrefix =
+//   | typeof DatastarDatalineElements
+//   | typeof DatastarDatalineSignals;
+
+/**
+ * @typedef { PatchElementsOptions | ElementOptions | PatchSignalsOptions | DatastarEventOptions } DatastarEventOptionsUnion
+ */
+
+/**
+ * @typedef { patchElementsEvent | patchSignalsEvent } DatastarEvent
+ */
+
 // Constants
 const DATASTAR = "datastar";
 const DATASTAR_REQUEST = "Datastar-Request";
@@ -63,6 +124,11 @@ const sseHeaders = {
   "Connection": "keep-alive",
   "Content-Type": "text/event-stream",
 };
+
+// Simple Jsonifiable type definition to replace npm:type-fest dependency
+/**
+ * @typedef { string | number | boolean | null | undefined | Jsonifiable[] | { [key: string]: Jsonifiable }} Jsonifiable
+ */
 
 /**
  * @param { unknown } obj
@@ -543,77 +609,3 @@ export class ServerSentEventGenerator {
     return this.patchSignals(JSON.stringify(patch), options);
   }
 }
-
-// types.ts
-// import {
-//   DatastarDatalineElements,
-//   DatastarDatalinePatchMode,
-//   DatastarDatalineOnlyIfMissing,
-//   DatastarDatalineSelector,
-//   DatastarDatalineSignals,
-//   DatastarDatalineUseViewTransition,
-//   DefaultElementPatchMode,
-//   DefaultElementsUseViewTransitions,
-//   DefaultPatchSignalsOnlyIfMissing,
-//   EventTypes,
-//   ElementPatchModes,
-// } from "./consts.ts";
-
-// Simple Jsonifiable type definition to replace npm:type-fest dependency
-/**
- * @typedef { string | number | boolean | null | undefined | Jsonifiable[] | { [key: string]: Jsonifiable }} Jsonifiable
- */
-
-// type ElementPatchMode = typeof ElementPatchModes[number];
-// type EventType = typeof EventTypes[number];
-
-// type StreamOptions = Partial<{
-//   onError: (error: unknown) => Promise<void> | void;
-//   onAbort: (reason?: string) => Promise<void> | void;
-//   responseInit: Record<string, unknown>;
-//   keepalive: boolean;
-// }>
-
-// interface DatastarEventOptions {
-//   eventId?: string;
-//   retryDuration?: number;
-// }
-
-// interface ElementOptions extends DatastarEventOptions {
-//   [DatastarDatalineUseViewTransition]?: boolean;
-// }
-
-// interface PatchElementsOptions extends ElementOptions {
-//   [DatastarDatalinePatchMode]?: ElementPatchMode;
-//   [DatastarDatalineSelector]?: string;
-// }
-
-// interface patchElementsEvent {
-//   event: "datastar-patch-elements";
-//   options: PatchElementsOptions;
-//   [DatastarDatalineElements]: string;
-// }
-
-// interface PatchSignalsOptions extends DatastarEventOptions {
-//   [DatastarDatalineOnlyIfMissing]?: boolean;
-// }
-
-// interface patchSignalsEvent {
-//   event: "datastar-patch-signals";
-//   options: PatchSignalsOptions;
-//   [DatastarDatalineSignals]: Record<string, Jsonifiable>;
-// }
-
-// type MultilineDatalinePrefix =
-//   | typeof DatastarDatalineElements
-//   | typeof DatastarDatalineSignals;
-
-// type DatastarEventOptionsUnion =
-//   | PatchElementsOptions
-//   | ElementOptions
-//   | PatchSignalsOptions
-//   | DatastarEventOptions;
-
-// type DatastarEvent =
-//   | patchElementsEvent
-//   | patchSignalsEvent;
