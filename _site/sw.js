@@ -275,12 +275,12 @@ function RootLayout(children) {
     <meta name="viewport" content="width=device-width">
     <title>Tasks</title>
     <link href="main.css" rel="stylesheet">
-    <!-- TODO design favicon -->
-    <!-- <link rel="icon" href="favicon.ico" /> -->
+    <!-- TODO placeholder favicon -->
+    <link rel="icon" href="assets/ios/16.png" />
 
     <script type="module" src="main.js"></script>
     <script type="module" src="confirmation-handler.js"></script>
-    <!-- <link rel="manifest" href="app.webmanifest"> -->
+    <link rel="manifest" href="app.webmanifest">
     <script type="module" src="datastar.js"></script>
   </head>
   <body>
