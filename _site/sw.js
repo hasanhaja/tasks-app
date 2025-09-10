@@ -1,7 +1,7 @@
 import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
-import { escapeHtml, cacheStatic, cleanCache, post } from "./utils.js";
+import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
 const VERSION = "0.0.2";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
@@ -183,11 +183,10 @@ self.addEventListener("install", (e) => {
 });
 
 async function cleanupAndClaim() {
-  const tasks = [
-    cleanCache(STATIC_CACHE_NAME),
-    cleanCache(IMAGE_CACHE_NAME),
-  ];
-  await Promise.all(tasks);
+  await cleanCaches(
+    STATIC_CACHE_NAME,
+    IMAGE_CACHE_NAME,
+  );
   await self.clients.claim();
 }
 
