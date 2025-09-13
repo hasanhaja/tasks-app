@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Tasks | New task</title>
+    <title>Tasks | Settings</title>
     <link href="main.css" rel="stylesheet">
     <!-- TODO placeholder favicon -->
     <link rel="icon" href="assets/ios/16.png" />
@@ -12,18 +12,17 @@
   </head>
   <body>
     <header>
-      <h1 class="sr-only">New Task Page</h1>
+      <h1 class="sr-only">Settings Page</h1>
     </header>
 
     <main>
-      <h2 class="title">New task</h2>
-      <form method="POST" action="/create">
-        <label>
-          <span>Task name</span>
-          <textarea name="task" autofocus required class="input"></textarea>
-        </label>
-        <button type="submit" class="btn">Create</button>
-      </form>
+      <h2 class="title">Settings</h2>
+      <section>
+        <h3 class="title">Diagnostics<h3>
+        <ul>
+          <li>Version <span>v0.0.3</span></li>
+        </ul>
+      </section>
     </main>
   </body>
 </html>

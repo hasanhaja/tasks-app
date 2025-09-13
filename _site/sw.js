@@ -3,7 +3,7 @@ import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
 import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
-const VERSION = "0.0.2";
+const VERSION = "0.0.3";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
 const DYNAMIC_CACHE_NAME = `dynamic-cache`;
@@ -26,6 +26,8 @@ const assets = [
   "/index.html",
   "/new.html",
   "/new",
+  "/settings.html",
+  "/settings",
   "/main.js",
   "/datastar.js",
   "/app.webmanifest",
@@ -350,7 +352,7 @@ function TodoList(data) {
  */
 function FilterControls(filter) {
   return `
-    <form class="task-controls" data-variant="filter">
+    <form class="task-controls" data-variant="filter" id="task-control-filter">
       <fieldset>
         <label class="btn">
           <input
@@ -436,16 +438,11 @@ function RootLayout(children) {
 }
 
 /**
-  * @param {string} cachedContent 
   * @param {TodoItem[]} data
   * @param { AppFilterState } filter
   * @returns {string}
   */
-function IndexPage(cachedContent, data, filter) {
-  if (!data || data.length === 0) {
-    return cachedContent;
-  }
-
+function IndexPage(data, filter) {
   return RootLayout(`
     <confirmation-handler confirmation-dialog="task-delete-confirmation">
       <section>
@@ -488,7 +485,7 @@ async function FilteredTodoList(filter) {
   return TodoList(data);
 }
 
-app.get("/", async () => {
+app.get("/", async (req) => {
   const filter = await getFilterState();
 
   const res = await caches.match("/");
@@ -508,7 +505,31 @@ app.get("/", async () => {
       }
     });
 
-  const body = IndexPage(originalBody, data, filter);
+  const isDatastarRequest = req.headers.get("Datastar-Request") === "true";
+
+  if (!data || data.length === 0) {
+    if (isDatastarRequest) {
+      return ServerSentEventGenerator.stream((stream) => {
+        stream.executeScript("document.body.removeAttribute('data-on-sw-activated')");
+      });
+    }
+
+    return new Response(originalBody, {
+      status: res.status,
+      statusText: res.statusText,
+      headers: res.headers,
+    });
+  }
+
+  const body = IndexPage(data, filter);
+
+  if (isDatastarRequest) {
+    return ServerSentEventGenerator.stream((stream) => {
+      stream.patchElements(FilterControls(filter));
+      stream.patchElements(TodoList(data));
+      stream.executeScript("document.body.removeAttribute('data-on-sw-activated')");
+    });
+  }
 
   return new Response(body, {
     status: res.status,
