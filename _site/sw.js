@@ -507,9 +507,8 @@ app.get("/", async (req) => {
 
   if (!data || data.length === 0) {
     if (isDatastarRequest) {
-      return new Response(null, {
-        status: 204,
-        statusText: "No Content",
+      return ServerSentEventGenerator.stream((stream) => {
+        stream.executeScript("document.body.removeAttribute('data-on-sw-activated')");
       });
     }
 
