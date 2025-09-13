@@ -13,7 +13,7 @@
     <link rel="manifest" href="app.webmanifest">
     <script type="module" src="datastar.js"></script>
   </head>
-  <body>
+  <body data-on-sw-activated="@get('/')">
     <header>
       <h1 class="sr-only">Tasks App Home</h1>
       <nav class="floating-menu max-width">
@@ -41,7 +41,7 @@
         <section>
           <h2 class="title">Tasks</h2>
           <div class="controls-panel">
-            <form class="task-controls" data-variant="filter">
+            <form class="task-controls" data-variant="filter" id="task-control-filter">
               <fieldset>
                 <label class="btn">
                   <input

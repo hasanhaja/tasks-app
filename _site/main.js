@@ -14,6 +14,7 @@ const App = {
 
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         console.log("New service worker activated");
+        document.body.dispatchEvent(new Event("sw-activated"));
       });
     } else {
       console.error("Service workers are not supported");
