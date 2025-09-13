@@ -223,9 +223,16 @@
 /* TODO For component tokens and component styling */
 @layer components {
   .title {
-    font-size: 4rem;
-    line-height: 1;
-    padding-block-start: 2rem;
+    &:is(h2) {
+      font-size: 4rem;
+      line-height: 1;
+      padding-block-start: 2rem;
+    }
+
+    &:is(h3) {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
   }
 
   header:has(.floating-menu) {

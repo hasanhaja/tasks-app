@@ -26,6 +26,8 @@ const assets = [
   "/index.html",
   "/new.html",
   "/new",
+  "/settings.html",
+  "/settings",
   "/main.js",
   "/datastar.js",
   "/app.webmanifest",
