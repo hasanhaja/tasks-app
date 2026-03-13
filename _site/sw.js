@@ -3,7 +3,7 @@ import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
 import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
-const VERSION = "0.0.3";
+const VERSION = "0.0.4";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
 const DYNAMIC_CACHE_NAME = `dynamic-cache`;
@@ -270,7 +270,7 @@ function ConfirmationDialog({ id }) {
 
 function List(id, title, completed) {
   return `
-    <li id="task-${id}">
+    <li id="task-${id}" ${completed ? "" : "class='with-task-menu'"}>
       <label>
         <input 
           type="checkbox" 
