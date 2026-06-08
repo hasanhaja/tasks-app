@@ -591,7 +591,7 @@ function EditPage(id, title) {
     <script type="module" src="autofocus-input.js"></script>
     <script type="module" src="datastar.js"></script>
   </head>
-  <body>
+  <body class="container">
     <header>
       <h1 class="sr-only">Edit task</h1>
     </header>
