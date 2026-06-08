@@ -401,6 +401,7 @@
       anchor-scope: --task-menu;
     }
 
+    /* FIXME This whole label nested markup needs to be reworked */
     label {
       display: flex;
       gap: 0.8rem;
@@ -411,9 +412,14 @@
       width: 100%;
       display: flex;
       justify-content: space-between;
+      align-items: inherit; /* Needs to be reworked but it takes the align items from above */
 
       & > span, & > s {
         word-break: break-word;
+      }
+
+      & > span {
+        max-height: max-content;
       }
     }
 
@@ -474,6 +480,7 @@
       border: unset;
       padding-inline: 0.5rem;
       min-width: var(--touch-target-min, 44px); /* WCAG 2.1 AAA */
+      min-height: var(--touch-target-min, 44px); /* WCAG 2.1 AAA */
 
       /* FIXME This structure feels a little awkward */
       .edit-task {
