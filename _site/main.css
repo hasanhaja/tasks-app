@@ -607,8 +607,10 @@
 }
 
 @layer utilities {
-  .max-width {
-    max-width: 60ch;
+  /* https://smolcss.dev/#smol-container */
+  .container {
+    width: min(100% - 3rem, var(--container-max, 60ch));
+    margin-inline: auto;
   }
 
   /* TODO Clean this naming up */

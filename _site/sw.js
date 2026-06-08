@@ -1,12 +1,13 @@
 import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
+// TODO Remove unused imports
 import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
-const VERSION = "0.0.4";
+const VERSION = "0.0.5";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
-const DYNAMIC_CACHE_NAME = `dynamic-cache`;
+const DYNAMIC_CACHE_NAME = `dynamic-cache`; // TODO Remove if not necessary
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
 const APP_STATE_STORE_NAME = "app-state";
@@ -406,10 +407,10 @@ function RootLayout(children) {
     <link rel="manifest" href="app.webmanifest">
     <script type="module" src="datastar.js"></script>
   </head>
-  <body>
+  <body class="container">
     <header>
       <h1 class="sr-only">Tasks App Home</h1>
-      <nav class="floating-menu max-width">
+      <nav class="floating-menu container">
         <ul>
           <li>
             <a class="btn" href="/settings">
