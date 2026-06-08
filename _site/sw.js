@@ -172,7 +172,7 @@ async function getFilterState() {
 
 /**
   * @param { AppFilterState } filter
-  * @returns { string }
+  * @returns { Promise<string> }
   */
 async function setFilterState(filter) {
   const appStore = db.store(APP_STATE_STORE_NAME);
@@ -466,7 +466,7 @@ function IndexPage(data, filter) {
 
 /**
   * @param { AppFilterState } filter
-  * @returns { string }
+  * @returns { Promise<string> }
   */
 async function FilteredTodoList(filter) {
   const allEntries= await db.entries();
