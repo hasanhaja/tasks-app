@@ -1,12 +1,13 @@
 import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
+// TODO Remove unused imports
 import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
-const VERSION = "0.0.4";
+const VERSION = "0.0.5";
 const STATIC_CACHE_NAME = `static-cache_${VERSION}`;
 const IMAGE_CACHE_NAME = `image-cache_${VERSION}`;
-const DYNAMIC_CACHE_NAME = `dynamic-cache`;
+const DYNAMIC_CACHE_NAME = `dynamic-cache`; // TODO Remove if not necessary
 const DATABASE_NAME = "tasks-db";
 const STORE_NAME = "tasks";
 const APP_STATE_STORE_NAME = "app-state";
@@ -171,7 +172,7 @@ async function getFilterState() {
 
 /**
   * @param { AppFilterState } filter
-  * @returns { string }
+  * @returns { Promise<string> }
   */
 async function setFilterState(filter) {
   const appStore = db.store(APP_STATE_STORE_NAME);
@@ -270,7 +271,7 @@ function ConfirmationDialog({ id }) {
 
 function List(id, title, completed) {
   return `
-    <li id="task-${id}" ${completed ? "" : "class='with-task-menu'"}>
+    <li id="task-${id}">
       <label>
         <input 
           type="checkbox" 
@@ -278,45 +279,38 @@ function List(id, title, completed) {
           data-on-change="@patch('/complete?id=${id}')"
           ${completed ? "checked" : ""}
         >
-        ${ completed ?
-            `<span><s>${title}</s></span>` 
-          : `
-            <span>
-              <span>${title}</span>
-              <button popovertarget="task-menu__${id}">
-                <span class="sr-only">Open menu</span>
-                <span class="edit-task">
-                  <!-- TODO Replace with font awesome icon -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>
-                </span>
-              </button>
+        <span>
+          <span>${ completed ? `<s>${title}</s>` : title }</span>
+          <button popovertarget="task-menu__${id}">
+            <span class="sr-only">Open menu</span>
+            <span class="edit-task">
+              <!-- TODO Replace with font awesome icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>
             </span>
-          `
-        }
+          </button>
+        </span>
       </label>
 
-      ${ completed ? "" : `
-        <div popover id="task-menu__${id}">
-          <ul>
-            <li>
-              <!-- TODO On click emit event to open dialog -->
-              <button
-                class="btn"
-                data-variant="delete-task"
-                data-on-action-confirmed="@delete('/delete?id=${id}')"
-                data-on-click="event.target.dispatchEvent(new Event('action-attempted', { bubbles: true }))"
-              >
-                Delete
-              </button>
-            </li>
-            <li>
-              <a class="btn" data-variant="edit-task" href="/edit?id=${id}">
-                Edit
-              </a>
-            </li>
-          </ul>
-        </div>
-      `}
+      <div popover id="task-menu__${id}">
+        <ul>
+          <li>
+            <!-- TODO On click emit event to open dialog -->
+            <button
+              class="btn"
+              data-variant="delete-task"
+              data-on-action-confirmed="@delete('/delete?id=${id}')"
+              data-on-click="event.target.dispatchEvent(new Event('action-attempted', { bubbles: true }))"
+            >
+              Delete
+            </button>
+          </li>
+          <li>
+            <a class="btn" data-variant="edit-task" href="/edit?id=${id}">
+              Edit
+            </a>
+          </li>
+        </ul>
+      </div>
     </li>
   `;
 }
@@ -406,10 +400,10 @@ function RootLayout(children) {
     <link rel="manifest" href="app.webmanifest">
     <script type="module" src="datastar.js"></script>
   </head>
-  <body>
+  <body class="container">
     <header>
       <h1 class="sr-only">Tasks App Home</h1>
-      <nav class="floating-menu max-width">
+      <nav class="floating-menu container">
         <ul>
           <li>
             <a class="btn" href="/settings">
@@ -465,7 +459,7 @@ function IndexPage(data, filter) {
 
 /**
   * @param { AppFilterState } filter
-  * @returns { string }
+  * @returns { Promise<string> }
   */
 async function FilteredTodoList(filter) {
   const allEntries= await db.entries();
@@ -590,7 +584,7 @@ function EditPage(id, title) {
     <script type="module" src="autofocus-input.js"></script>
     <script type="module" src="datastar.js"></script>
   </head>
-  <body>
+  <body class="container">
     <header>
       <h1 class="sr-only">Edit task</h1>
     </header>
