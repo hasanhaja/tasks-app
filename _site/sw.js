@@ -271,7 +271,7 @@ function ConfirmationDialog({ id }) {
 
 function List(id, title, completed) {
   return `
-    <li id="task-${id}" ${completed ? "" : "class='with-task-menu'"}>
+    <li id="task-${id}" class="with-task-menu">
       <label>
         <input 
           type="checkbox" 
@@ -279,45 +279,38 @@ function List(id, title, completed) {
           data-on-change="@patch('/complete?id=${id}')"
           ${completed ? "checked" : ""}
         >
-        ${ completed ?
-            `<span><s>${title}</s></span>` 
-          : `
-            <span>
-              <span>${title}</span>
-              <button popovertarget="task-menu__${id}">
-                <span class="sr-only">Open menu</span>
-                <span class="edit-task">
-                  <!-- TODO Replace with font awesome icon -->
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>
-                </span>
-              </button>
+        <span>
+          <span>${ completed ? `<s>${title}</s>` : title }</span>
+          <button popovertarget="task-menu__${id}">
+            <span class="sr-only">Open menu</span>
+            <span class="edit-task">
+              <!-- TODO Replace with font awesome icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z"/></svg>
             </span>
-          `
-        }
+          </button>
+        </span>
       </label>
 
-      ${ completed ? "" : `
-        <div popover id="task-menu__${id}">
-          <ul>
-            <li>
-              <!-- TODO On click emit event to open dialog -->
-              <button
-                class="btn"
-                data-variant="delete-task"
-                data-on-action-confirmed="@delete('/delete?id=${id}')"
-                data-on-click="event.target.dispatchEvent(new Event('action-attempted', { bubbles: true }))"
-              >
-                Delete
-              </button>
-            </li>
-            <li>
-              <a class="btn" data-variant="edit-task" href="/edit?id=${id}">
-                Edit
-              </a>
-            </li>
-          </ul>
-        </div>
-      `}
+      <div popover id="task-menu__${id}">
+        <ul>
+          <li>
+            <!-- TODO On click emit event to open dialog -->
+            <button
+              class="btn"
+              data-variant="delete-task"
+              data-on-action-confirmed="@delete('/delete?id=${id}')"
+              data-on-click="event.target.dispatchEvent(new Event('action-attempted', { bubbles: true }))"
+            >
+              Delete
+            </button>
+          </li>
+          <li>
+            <a class="btn" data-variant="edit-task" href="/edit?id=${id}">
+              Edit
+            </a>
+          </li>
+        </ul>
+      </div>
     </li>
   `;
 }
