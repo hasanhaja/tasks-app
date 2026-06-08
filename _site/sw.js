@@ -271,7 +271,7 @@ function ConfirmationDialog({ id }) {
 
 function List(id, title, completed) {
   return `
-    <li id="task-${id}" class="with-task-menu">
+    <li id="task-${id}">
       <label>
         <input 
           type="checkbox" 

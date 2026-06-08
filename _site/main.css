@@ -397,6 +397,8 @@
     li {
       padding-block: 0.5rem;
       padding-inline: 0.25rem;
+
+      anchor-scope: --task-menu;
     }
 
     label {
@@ -465,10 +467,6 @@
           inset calc(var(--_shadow-size) * -1) calc(var(--_shadow-size) * -1) var(--clr-shadow),
           inset var(--_shadow-size) var(--_shadow-size) var(--clr-shadow);
       }
-    }
-
-    .with-task-menu {
-      anchor-scope: --task-menu;
     }
 
     button[popovertarget] {
