@@ -1,6 +1,7 @@
 import { ServerSentEventGenerator } from "./datastar-sdk.js";
 import { DBDriver } from "./db.js";
 import { Router } from "./router.js";
+import { EventBus } from "./event-bus.js";
 // TODO Remove unused imports
 import { escapeHtml, cacheStatic, cleanCaches, post } from "./utils.js";
 
@@ -20,6 +21,8 @@ const DEFAULT_APP_STATE = {
 
 const app = new Router();
 
+const eb = new EventBus();
+
 const sanitizerBc = new BroadcastChannel("html-sanitizer");
 
 const assets = [
@@ -30,6 +33,7 @@ const assets = [
   "/settings.html",
   "/settings",
   "/main.js",
+  "/event-bus.js",
   "/datastar.js",
   "/app.webmanifest",
   "/main.css",
